@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Avatar, Button, Menu, Portal } from "@chakra-ui/react";
 import { FaBars } from "react-icons/fa";
 import { toaster } from "@/components/ui/toaster";
+import { baseApi } from "../../../app/api/baseApi";
 import {
   removeToken,
   removeUserRole,
@@ -20,6 +21,7 @@ const Header = ({ isOpen, setIsOpen }) => {
     removeToken();
     removeUserRole();
     removeUser();
+    dispatch(baseApi.util.resetApiState());
     toaster.create({
       type: "success",
       title: "Signed out",
