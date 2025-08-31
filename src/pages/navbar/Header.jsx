@@ -6,6 +6,7 @@ import { Avatar, Button, Menu, Portal } from "@chakra-ui/react";
 import { FaBars } from "react-icons/fa";
 import { toaster } from "@/components/ui/toaster";
 import { baseApi } from "../../../app/api/baseApi";
+import { useDispatch } from "react-redux";
 import {
   removeToken,
   removeUserRole,
@@ -15,6 +16,7 @@ import {
 const Header = ({ isOpen, setIsOpen }) => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const dropdownRef = useRef(null);
 
   const handleSignOut = () => {
