@@ -342,7 +342,7 @@ const EditCar = () => {
                   <option value="">Select Doors</option>
                   {(doors?.doors || []).map((d) => (
                     <option key={d._id} value={d._id}>
-                      {d.name}
+                      {d.doors}
                     </option>
                   ))}
                 </select>
@@ -356,7 +356,7 @@ const EditCar = () => {
                   <option value="">Select Transmission</option>
                   {(transmissions?.transmissions || []).map((t) => (
                     <option key={t._id} value={t._id}>
-                      {t.name}
+                      {t.transmission}
                     </option>
                   ))}
                 </select>

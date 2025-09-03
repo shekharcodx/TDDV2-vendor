@@ -45,16 +45,16 @@ const CarListing = () => {
   // 🔹 Hook Form
   const { register, handleSubmit, watch, setValue } = useForm({
     defaultValues: {
-      brand: "",
-      model: "",
-      trim: "",
-      year: "",
+      carBrand: "",
+      carModel: "",
+      carTrim: "",
+      modelYear: "",
       regionalSpecs: "",
       horsePower: "",
       seatingCapacity: "",
       interiorColor: "",
       exteriorColor: "",
-      doors: "",
+      carDoors: "",
       transmission: "",
       bodyType: "",
       fuelType: "",
@@ -66,7 +66,7 @@ const CarListing = () => {
       rentPerDay: "",
       rentPerWeek: "",
       rentPerMonth: "",
-      insurance: "",
+      carInsurance: "",
       warranty: "",
       mileage: "",
       location: "",
@@ -79,22 +79,22 @@ const CarListing = () => {
   const images = watch("images");
 
   // 🔹 Cascading dropdowns
-  const selectedBrand = watch("brand");
-  const selectedModel = watch("model");
+  const selectedBrand = watch("carBrand");
+  const selectedModel = watch("carModel");
 
   useEffect(() => {
     if (selectedBrand) {
-      setValue("model", "");
-      setValue("trim", "");
-      setValue("year", "");
+      setValue("carModel", "");
+      setValue("carTrim", "");
+      setValue("modelYear", "");
       fetchModels(selectedBrand);
     }
   }, [selectedBrand]);
 
   useEffect(() => {
     if (selectedModel) {
-      setValue("trim", "");
-      setValue("year", "");
+      setValue("carTrim", "");
+      setValue("modelYear", "");
       fetchTrims(selectedModel);
       fetchYears(selectedModel);
     }
@@ -113,7 +113,7 @@ const CarListing = () => {
 
   // 🔹 Submit
   const onSubmit = (data) => {
-    if (!data.brand || !data.model || !data.year) {
+    if (!data.carBrand || !data.carModel || !data.modelYear) {
       toaster.error({ title: "Please select brand, model, and year." });
       return;
     }
@@ -150,7 +150,7 @@ const CarListing = () => {
             <label className={styles.labelWrapper}>
               Brand
               <div className={styles.selectWrapper}>
-                <select {...register("brand")} className={styles.select}>
+                <select {...register("carBrand")} className={styles.select}>
                   <option value="">Select Brand</option>
                   {(brands?.carBrands || []).map((brand) => (
                     <option key={brand._id} value={brand._id}>
@@ -165,7 +165,7 @@ const CarListing = () => {
               Model
               <div className={styles.selectWrapper}>
                 <select
-                  {...register("model")}
+                  {...register("carModel")}
                   className={styles.select}
                   disabled={!selectedBrand}
                 >
@@ -183,7 +183,7 @@ const CarListing = () => {
               Trim
               <div className={styles.selectWrapper}>
                 <select
-                  {...register("trim")}
+                  {...register("carTrim")}
                   className={styles.select}
                   disabled={!selectedModel}
                 >
@@ -201,7 +201,7 @@ const CarListing = () => {
               Year
               <div className={styles.selectWrapper}>
                 <select
-                  {...register("year")}
+                  {...register("modelYear")}
                   className={styles.select}
                   disabled={!selectedModel}
                 >
@@ -306,11 +306,12 @@ const CarListing = () => {
             <label className={styles.labelWrapper}>
               Doors
               <div className={styles.selectWrapper}>
-                <select {...register("doors")} className={styles.select}>
+                <select {...register("carDoors")} className={styles.select}>
                   <option value="">Select Doors</option>
                   {(doors?.doors || []).map((d) => (
                     <option key={d._id} value={d._id}>
-                      {d.name}
+                      {d.doors} 
+                      
                     </option>
                   ))}
                 </select>
@@ -324,7 +325,7 @@ const CarListing = () => {
                   <option value="">Select Transmission</option>
                   {(transmissions?.transmissions || []).map((t) => (
                     <option key={t._id} value={t._id}>
-                      {t.name}
+                      {t.transmission}
                     </option>
                   ))}
                 </select>
@@ -346,26 +347,23 @@ const CarListing = () => {
             </label>
           </div>
 
-          {/* Next row: Fuel Type */}
-         <div className={styles.grid}>
-  <label className={styles.labelWrapper}>
-    Fuel Type
-    <div className={styles.selectWrapper}>
-      <select {...register("fuelType")} className={styles.select}>
-        <option value="">Select Fuel Type</option>
-        {(fuelTypes?.fuelTypes || []).map((f) => (
-          <option key={f._id} value={f._id}>{f.name}</option>
-        ))}
-      </select>
-    </div>
-  </label>
-
-  {/* Empty placeholders to maintain alignment */}
-  <div></div>
-  <div></div>
-  <div></div>
-</div>
-
+          {/* Fuel Type */}
+          <div className={styles.grid}>
+            <label className={styles.labelWrapper}>
+              Fuel Type
+              <div className={styles.selectWrapper}>
+                <select {...register("fuelType")} className={styles.select}>
+                  <option value="">Select Fuel Type</option>
+                  {(fuelTypes?.fuelTypes || []).map((f) => (
+                    <option key={f._id} value={f._id}>
+                      {f.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </label>
+            <div></div><div></div><div></div>
+          </div>
 
           {/* Tech & Other Features */}
           <div className={styles.sectionHeader}>Technical Features</div>
@@ -489,7 +487,7 @@ const CarListing = () => {
           <div className={styles.grid}>
             <label className={styles.labelWrapper}>
               Car Insurance
-              <select {...register("insurance")} className={styles.select}>
+              <select {...register("carInsurance")} className={styles.select}>
                 <option value="">Car Insurance</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
