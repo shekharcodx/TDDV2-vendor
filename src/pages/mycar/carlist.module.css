@@ -238,3 +238,35 @@
 .gapTop {
   margin-top: 25px;
 }
+/* ---------------- Status Labels ---------------- */
+.status {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 20px;
+  text-align: center;
+  min-width: 80px;
+}
+
+/* Approved */
+.approved {
+  background: rgba(137, 180, 188, 0.15); /* light misty teal */
+  color: var(--slate-gray-secondary-two-color);
+  border: 1px solid rgba(137, 180, 188, 0.35);
+}
+
+/* Pending */
+.pending {
+  background: rgba(255, 193, 7, 0.15); /* soft amber */
+  color: #b8860b;
+  border: 1px solid rgba(255, 193, 7, 0.35);
+  box-shadow:  #b8860b;
+}
+
+/* Hold */
+.hold {
+  background: rgba(220, 53, 69, 0.15); /* soft red */
+  color: #c62828;
+  border: 1px solid rgba(220, 53, 69, 0.35);
+}

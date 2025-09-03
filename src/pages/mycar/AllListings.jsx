@@ -46,24 +46,23 @@ function AllListings() {
                   />
                 </td>
                 <td>{listing?.car?.carBrand?.name}</td>
-           <td>{listing?.car?.carBrand?.carModel?.name}</td>
-
+           
 
                 <td>{`AED ${listing?.rentPerDay}`}</td>
                 <td>{`AED ${listing?.rentPerWeek}`}</td>
                 <td>
                   <span
                     className={`${styles.status} ${
-                      listing?.status === 1
+                      listing?.status === 2
                         ? styles.approved
-                        : listing?.status === 0
+                        : listing?.status === 1
                         ? styles.pending
                         : styles.hold
                     }`}
                   >
-                    {listing?.status === 1
+                    {listing?.status === 2
                       ? "Approved"
-                      : listing?.status === 0
+                      : listing?.status === 1
                       ? "Pending"
                       : "Hold"}
                   </span>
