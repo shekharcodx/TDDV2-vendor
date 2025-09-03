@@ -80,7 +80,7 @@ const carApi = baseApi.injectEndpoints({
     }),
 
     getVendorListings: builder.query({
-      query: () => ({ url: "/vendorListings", method: "GET" }),
+      query: ({page}) => ({ url: `/vendorListings?page=${page}`, method: "GET" }),
       providesTags: ["VendorListings"],
     }),
   }),

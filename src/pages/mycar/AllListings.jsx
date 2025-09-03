@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Flex,
-  Button,
-  ButtonGroup,
-  IconButton,
-  Text,
-} from "@chakra-ui/react";
+import { Flex, Button, IconButton, Text } from "@chakra-ui/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useGetVendorListingsQuery } from "../../../app/api/carListingApi";
 import styles from "./mylist.module.css";
@@ -23,40 +17,8 @@ function AllListings() {
   const listings = data?.listings?.docs || [];
   const totalDocs = data?.listings?.totalDocs || 0;
   const totalPages = data?.listings?.totalPages || 1;
-
-  // ✅ Utility to generate page numbers with ellipsis
-  const getPageNumbers = () => {
-    const pages = [];
-    const siblingCount = 1; // how many numbers to show around current page
-    const firstPage = 1;
-    const lastPage = totalPages;
-
-    if (totalPages <= 5) {
-      for (let i = 1; i <= totalPages; i++) pages.push(i);
-    } else {
-      if (page > siblingCount + 2) {
-        pages.push(firstPage, "...");
-      } else {
-        for (let i = 1; i < page; i++) pages.push(i);
-      }
-
-      for (
-        let i = Math.max(page - siblingCount, 1);
-        i <= Math.min(page + siblingCount, totalPages);
-        i++
-      ) {
-        pages.push(i);
-      }
-
-      if (page < totalPages - (siblingCount + 1)) {
-        pages.push("...", lastPage);
-      } else {
-        for (let i = page + 1; i <= lastPage; i++) pages.push(i);
-      }
-    }
-
-    return pages;
-  };
+  const hasPrevPage = data?.listings?.hasPrevPage;
+  const hasNextPage = data?.listings?.hasNextPage;
 
   return (
     <div className={styles.wrapper}>
@@ -84,7 +46,9 @@ function AllListings() {
                   />
                 </td>
                 <td>{listing?.car?.carBrand?.name}</td>
-                <td>{listing?.car?.carModel?.name}</td>
+           <td>{listing?.car?.carBrand?.carModel?.name}</td>
+
+
                 <td>{`AED ${listing?.rentPerDay}`}</td>
                 <td>{`AED ${listing?.rentPerWeek}`}</td>
                 <td>
@@ -118,48 +82,73 @@ function AllListings() {
             ))}
           </tbody>
         </table>
+{/* Pagination */}
+<div style={{ marginTop: "20px", marginBottom: "20px", padding: "0 20px" }}>
+  <Flex justify="space-between" align="center" gap={4}>
+    <Text fontSize="sm">
+      Showing {data?.listings?.pagingCounter}–
+      {Math.min(
+        data?.listings?.pagingCounter + listings.length - 1,
+        totalDocs
+      )}{" "}
+      of {totalDocs}
+    </Text>
 
-        {/* ✅ New Pagination */}
-        <Flex justify="space-between" align="center" mt={4}>
-          <Text fontSize="sm">
-            Showing {listings.length} of {totalDocs}
-          </Text>
+    <Flex gap={2} align="center">
+      {/* Prev */}
+      <Button
+        size="sm"
+        onClick={() => setPage((prev) => prev - 1)}
+        isDisabled={!hasPrevPage}
+        bg="var(--gradient-background)"
+        color="white"
+        _hover={{ bg: "var(--gradient-background)", opacity: 0.9 }}
+        opacity={!hasPrevPage ? 0.5 : 1}
+        borderRadius="md"
+        px={3}
+      >
+        <ChevronLeft size={14} style={{ marginRight: "4px" }} />
+        Prev
+      </Button>
 
-          <ButtonGroup size="sm" variant="outline" isAttached>
-            {/* Prev */}
-            <IconButton
-              icon={<ChevronLeft size={16} />}
-              aria-label="Previous Page"
-              onClick={() => setPage((prev) => prev - 1)}
-              isDisabled={page === 1}
-            />
+      {/* Page Numbers */}
+      {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+        <Button
+          key={p}
+          size="sm"
+          onClick={() => setPage(p)}
+          bg="var(--gradient-background)"
+          color="white"
+          _hover={{ bg: "var(--gradient-background)", opacity: 0.9 }}
+          opacity={page === p ? 1 : 0.7}
+          borderRadius="md"
+          px={3}
+        >
+          {p}
+        </Button>
+      ))}
 
-            {/* Page Numbers with Ellipsis */}
-            {getPageNumbers().map((p, idx) =>
-              p === "..." ? (
-                <Button key={`ellipsis-${idx}`} isDisabled>
-                  ...
-                </Button>
-              ) : (
-                <Button
-                  key={p}
-                  onClick={() => setPage(p)}
-                  variant={page === p ? "solid" : "outline"}
-                >
-                  {p}
-                </Button>
-              )
-            )}
+      {/* Next */}
+      <Button
+        size="sm"
+        onClick={() => setPage((prev) => prev + 1)}
+        isDisabled={!hasNextPage}
+        bg="var(--gradient-background)"
+        color="white"
+        _hover={{ bg: "var(--gradient-background)", opacity: 0.9 }}
+        opacity={!hasNextPage ? 0.5 : 1}
+        borderRadius="md"
+        px={3}
+      >
+        Next
+        <ChevronRight size={14} style={{ marginLeft: "4px" }} />
+      </Button>
+    </Flex>
+  </Flex>
+</div>
 
-            {/* Next */}
-            <IconButton
-              icon={<ChevronRight size={16} />}
-              aria-label="Next Page"
-              onClick={() => setPage((prev) => prev + 1)}
-              isDisabled={page === totalPages}
-            />
-          </ButtonGroup>
-        </Flex>
+    
+
       </div>
     </div>
   );

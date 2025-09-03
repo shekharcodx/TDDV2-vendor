@@ -11,6 +11,13 @@
     rgba(137, 180, 188, 1) 35%
   );
 }
+.activePage {
+  background: linear-gradient(
+    90deg,
+    rgba(91, 120, 124, 1) 0%,
+    rgba(137, 180, 188, 1) 35%
+  );
+}
 
 /* ---------------- Page ---------------- */
 .page {
