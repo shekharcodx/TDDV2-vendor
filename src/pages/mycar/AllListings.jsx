@@ -32,7 +32,7 @@ function AllListings() {
               <th>Rent / Day</th>
               <th>Rent / Week</th>
               <th>Status</th>
-              <th>Action</th>
+              
             </tr>
           </thead>
           <tbody>
@@ -46,7 +46,7 @@ function AllListings() {
                   />
                 </td>
                 <td>{listing?.car?.carBrand?.name}</td>
-           
+                <td>{listing?.car?.carBrand?.carModel?.name}</td>
 
                 <td>{`AED ${listing?.rentPerDay}`}</td>
                 <td>{`AED ${listing?.rentPerWeek}`}</td>

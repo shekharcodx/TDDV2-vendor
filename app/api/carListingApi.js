@@ -79,8 +79,22 @@ const carApi = baseApi.injectEndpoints({
       }),
     }),
 
+    // ✅ Vendor Listings with filters
     getVendorListings: builder.query({
-      query: ({page}) => ({ url: `/vendorListings?page=${page}`, method: "GET" }),
+      query: ({ page = 1, status, isActive }) => {
+        const params = new URLSearchParams();
+        params.append("page", page);
+
+        if (status) params.append("status", status); // 1,2,3
+        if (isActive !== undefined && isActive !== "") {
+          params.append("isActive", isActive); // true/false
+        }
+
+        return {
+          url: `/vendorListings?${params.toString()}`,
+          method: "GET",
+        };
+      },
       providesTags: ["VendorListings"],
     }),
   }),
