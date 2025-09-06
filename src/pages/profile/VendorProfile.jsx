@@ -63,14 +63,13 @@ const VendorProfile = () => {
       landlineNum: profileData?.data?.contact?.landlineNum || "",
       mobileNum: profileData?.data?.contact?.mobileNum || "",
       fleetSize: profileData?.data?.vendorInformation?.fleetSize || "",
-      profilePicture: profileData?.data?.profilePicture || null,
+      profilePicture: profileData?.data?.profilePicture || null, // ✅ only once
       ijariCertificate: null,
       tradeLicense: null,
       vatCertificate: null,
       noc: null,
       emiratesId: null,
       poa: null,
-      profilePicture: null,
     },
   });
 
@@ -86,14 +85,13 @@ const VendorProfile = () => {
         landlineNum: profileData?.data?.contact?.landlineNum || "",
         mobileNum: profileData?.data?.contact?.mobileNum || "",
         fleetSize: profileData?.data?.vendorInformation?.fleetSize || "",
-        profilePicture: profileData?.data?.profilePicture || null,
+        profilePicture: profileData?.data?.profilePicture || null, // ✅ only once
         ijariCertificate: null,
         tradeLicense: null,
         vatCertificate: null,
         noc: null,
         emiratesId: null,
         poa: null,
-        profilePicture: null,
       });
     }
   }, [profileData, reset]);
@@ -101,76 +99,6 @@ const VendorProfile = () => {
   useEffect(() => {
     console.log("VendorProfile:errors", errors);
   }, [errors]);
-
-  // const [vendor, setVendor] = useState({
-  //   name: "Hamza",
-  //   email: "m.hamza7265+16@gmail.com",
-  //   businessName: "Atlas Cars",
-  //   contact: {
-  //     whatsappNum: "+920000000000",
-  //     landlineNum: "+920000000000",
-  //     mobileNum: "+920000000000",
-  //   },
-  //   address: {
-  //     street: "St#loremIpsum",
-  //     country: "cont#loremIpsum",
-  //     city: "city#loremIpsum",
-  //     state: "state#loremIpsum",
-  //     mapUrl: "url#loremIpsum",
-  //   },
-  //   vendorInformation: {
-  //     fleetSize: 10,
-  //   },
-  //   profilePicture: {
-  //     url: "https://drivehub-uploads.s3.eu-north-1.amazonaws.com/profile_pictures/1755692001361-avatar.svg",
-  //   },
-  //   documents: {
-  //     ijariCertificate: {
-  //       key: "vendor_documents/1755691996480-file-sample_150kB.pdf",
-  //       filename: "Ijari Certificate.pdf",
-  //     },
-  //     tradeLicense: {
-  //       key: "vendor_documents/1755691998684-file-sample_150kB.pdf",
-  //       filename: "Trade License.pdf",
-  //     },
-  //     vatCertificate: {
-  //       key: "vendor_documents/1755691999209-file-sample_150kB.pdf",
-  //       filename: "VAT Certificate.pdf",
-  //     },
-  //     noc: {
-  //       key: "vendor_documents/1755691999676-file-sample_150kB.pdf",
-  //       filename: "NOC.pdf",
-  //     },
-  //     emiratesId: {
-  //       key: "vendor_documents/1755692000176-file-sample_150kB.pdf",
-  //       filename: "Emirates ID.pdf",
-  //     },
-  //     poa: {
-  //       key: "vendor_documents/1755692000742-file-sample_150kB.pdf",
-  //       filename: "Power of Attorney.pdf",
-  //     },
-  //   },
-  // });
-
-  // const handleChange = (section, field, value) => {
-  //   if (
-  //     typeof vendor[section] === "object" &&
-  //     !Array.isArray(vendor[section])
-  //   ) {
-  //     setVendor((prev) => ({
-  //       ...prev,
-  //       [section]: {
-  //         ...prev[section],
-  //         [field]: value,
-  //       },
-  //     }));
-  //   } else {
-  //     setVendor((prev) => ({
-  //       ...prev,
-  //       [field]: value,
-  //     }));
-  //   }
-  // };
 
   const toggleEdit = () => {
     setIsEditing((prev) => !prev);
@@ -330,12 +258,7 @@ const VendorProfile = () => {
                     </div>
                   </>
                 ) : isFetching ? (
-                  <Skeleton
-                    variant="shine"
-                    width="200px"
-                    height="15px"
-                    mt="10px"
-                  />
+                  <Skeleton variant="shine" width="200px" height="15px" mt="10px" />
                 ) : (
                   profileData?.data?.businessName
                 )}
@@ -355,12 +278,7 @@ const VendorProfile = () => {
                     </div>
                   </>
                 ) : isFetching ? (
-                  <Skeleton
-                    variant="shine"
-                    width="200px"
-                    height="15px"
-                    mt="10px"
-                  />
+                  <Skeleton variant="shine" width="200px" height="15px" mt="10px" />
                 ) : (
                   profileData?.data?.vendorInformation?.fleetSize
                 )}
@@ -380,12 +298,7 @@ const VendorProfile = () => {
                     </div>
                   </>
                 ) : isFetching ? (
-                  <Skeleton
-                    variant="shine"
-                    width="200px"
-                    height="15px"
-                    mt="10px"
-                  />
+                  <Skeleton variant="shine" width="200px" height="15px" mt="10px" />
                 ) : (
                   profileData?.data?.contact?.mobileNum
                 )}
@@ -405,12 +318,7 @@ const VendorProfile = () => {
                     </div>
                   </>
                 ) : isFetching ? (
-                  <Skeleton
-                    variant="shine"
-                    width="200px"
-                    height="15px"
-                    mt="10px"
-                  />
+                  <Skeleton variant="shine" width="200px" height="15px" mt="10px" />
                 ) : (
                   profileData?.data?.contact?.whatsappNum
                 )}
@@ -430,12 +338,7 @@ const VendorProfile = () => {
                     </div>
                   </>
                 ) : isFetching ? (
-                  <Skeleton
-                    variant="shine"
-                    width="200px"
-                    height="15px"
-                    mt="10px"
-                  />
+                  <Skeleton variant="shine" width="200px" height="15px" mt="10px" />
                 ) : (
                   profileData?.data?.contact?.landlineNum
                 )}
@@ -494,7 +397,7 @@ const VendorProfile = () => {
                       </Box>
                     );
                   }
-                  return null; // to avoid warnings
+                  return null;
                 }
               )}
             </Box>
@@ -581,11 +484,11 @@ const VendorProfile = () => {
               )}
             </Flex>
           </div>
+
           <Flex justify={{ base: "center", md: "flex-end" }} mt="20px">
-            {/* Buttons */}
             {!isEditing ? (
               <div
-                className={`${styles.editBtn} ${styles.editModeBtn} cursor-pointer text-center  sm:!w-full md:!w-auto`}
+                className={`${styles.editBtn} ${styles.editModeBtn} cursor-pointer text-center sm:!w-full md:!w-auto`}
                 onClick={toggleEdit}
               >
                 Edit

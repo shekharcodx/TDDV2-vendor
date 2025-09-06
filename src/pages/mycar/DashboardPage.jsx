@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "./DashboardPage.module.css";
+import styles from "./Dash.module.css";
 import { useNavigate } from "react-router-dom";
 import car1 from "../../assets/car1.jpeg";
 import car2 from "../../assets/car2.jpeg";
