@@ -1,5 +1,4 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Layout from "@/pages/layout/Layout";
 import Profile from "@/pages/profile/Profile";
@@ -35,7 +34,7 @@ function App() {
           path: "/",
           element: <Layout />,
           children: [
-            { index:true, element: <DashboardPage /> },
+            { index: true, element: <DashboardPage /> },
             { path: "profile", element: <Profile /> },
             { path: "user-form", element: <UserForm /> },
             { path: "create-listing", element: <CarListing /> },
@@ -49,8 +48,8 @@ function App() {
     { path: "/unauthorized", element: <Unauthorized /> },
     { path: "/login", element: <Login /> },
     { path: "/Forget-pass", element: <ForgetPassword /> },
-     { path:"/register", element: <SignupForm /> },
-     { path: "/details", element: <DetailsForm /> },
+    { path: "/register", element: <SignupForm /> },
+    { path: "/details", element: <DetailsForm /> },
     { path: "*", element: <ErrorPage /> },
     { path: "/reset-pass", element: <Resetpass /> },
     { path: "/change-password", element: <ChangePass /> },
