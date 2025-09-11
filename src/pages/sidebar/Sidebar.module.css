@@ -46,10 +46,10 @@
   transition: background 0.3s, color 0.3s;
 }
 
-.menuHeader:hover,
-.menuHeader.active {
+.menuHeader:hover
+ {
   background-color: #f0f4ff;
-  color: #5fc0bdff;
+    background: var(--gradient-background);
   border-left: 4px solid #4460f1;
 }
 

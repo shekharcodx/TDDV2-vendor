@@ -34,56 +34,64 @@ function AllListings() {
     <div className={styles.wrapper}>
       {/* Filters */}
       <Flex mb="20px" gap={4} wrap="wrap" align="center">
-  {/* Status Filter */}
-  <div className={styles.selectWrapper}>
-    <label htmlFor="status">Status</label>
-    <select
-      id="status"
-      className={styles.select}
-      value={selectedStatus}
-      onChange={(e) => setSelectedStatus(e.target.value)}
-    >
-      <option value="">All Status</option>
-      <option value="1">Pending</option>
-      <option value="2">Approved</option>
-      <option value="3">Hold</option>
-    </select>
-  </div>
+        {/* Status Filter */}
+        <div className={styles.filterGroup}>
+          <label className={styles.filterLabel}>Listing Status</label>
+          <select
+            className={styles.filterSelect}
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+          >
+            <option value="">Select listing status</option>
+            <option value="1">Pending</option>
+            <option value="2">Approved</option>
+            <option value="3">On Hold</option>
+          </select>
+        </div>
 
-  {/* Active Filter */}
-  <div className={styles.selectWrapper}>
-    <label htmlFor="active">Active Status</label>
-    <select
-      id="active"
-      className={styles.select}
-      value={selectedActive}
-      onChange={(e) => setSelectedActive(e.target.value)}
-    >
-      <option value="">All Active</option>
-      <option value="true">Active</option>
-      <option value="false">Inactive</option>
-    </select>
-  </div>
+        {/* Active Filter */}
+        <div className={styles.filterGroup}>
+          <label className={styles.filterLabel}>Listing Active Status</label>
+          <select
+            className={styles.filterSelect}
+            value={selectedActive}
+            onChange={(e) => setSelectedActive(e.target.value)}
+          >
+            <option value="">Select listing active status</option>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </select>
+        </div>
 
-  {/* Reset Filters */}
-  <Button
-    size="sm"
-    className={styles.button}
-    mt={{ base: 2, md: 0 }}
-    onClick={() => {
-      setSelectedStatus("");
-      setSelectedActive("");
-    }}
-  >
-    Reset Filters
-  </Button>
-</Flex>
+        {/* Search Filter */}
+        <div className={`${styles.filterGroup} ${styles.searchGroup}`}>
+          <label className={styles.filterLabel}>Search Listing</label>
+          <input
+            type="text"
+            placeholder="Search listing"
+            className={styles.filterInput}
+          />
+        </div>
+
+        {/* Reset Filters */}
+        <Button
+          size="sm"
+          className={styles.resetBtn}
+          onClick={() => {
+            setSelectedStatus("");
+            setSelectedActive("");
+          }}
+        >
+          Reset Filter
+        </Button>
+      </Flex>
 
       {/* Table */}
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
-            <tr>
+
+            <tr className={styles.bg} >
               <th>Image</th>
               <th>Brand</th>
               <th>Model</th>
@@ -121,7 +129,7 @@ function AllListings() {
                       ? "Approved"
                       : listing?.status === 1
                       ? "Pending"
-                      : "Hold"}
+                      : "On Hold"}
                   </span>
                 </td>
                 <td>
@@ -140,7 +148,9 @@ function AllListings() {
         </table>
 
         {/* Pagination */}
-        <div style={{ marginTop: "20px", marginBottom: "20px", padding: "0 20px" }}>
+        <div
+          style={{ marginTop: "20px", marginBottom: "20px", padding: "0 20px" }}
+        >
           <Flex justify="space-between" align="center" gap={4}>
             <Text fontSize="sm">
               Showing {data?.listings?.pagingCounter}–
