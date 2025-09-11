@@ -63,15 +63,7 @@ function AllListings() {
           </select>
         </div>
 
-        {/* Search Filter */}
-        <div className={`${styles.filterGroup} ${styles.searchGroup}`}>
-          <label className={styles.filterLabel}>Search Listing</label>
-          <input
-            type="text"
-            placeholder="Search listing"
-            className={styles.filterInput}
-          />
-        </div>
+
 
         {/* Reset Filters */}
         <Button
