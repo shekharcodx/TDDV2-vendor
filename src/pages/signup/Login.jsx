@@ -126,7 +126,7 @@ const Login = () => {
             </button>
 
             {/* Only Forget Password link */}
-            <Link to="/forget-passgit" className={styles.forgetLink}>
+            <Link to="/Forget-pass" className={styles.forgetLink}>
               Forgot Password?
             </Link>
             {/* Register Link */}
