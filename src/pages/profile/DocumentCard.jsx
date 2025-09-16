@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./DocumentCard.module.css";
 import { FaFilePdf, FaFileImage, FaFileVideo } from "react-icons/fa";
 import { Download } from "lucide-react";
-import { useLazyGetDocumentQuery } from "../../../app/api/profileApi";
+import { useLazyGetDocumentQuery } from "@/app/api/profileApi";
 import { toaster } from "@/components/ui/toaster";
 import { Tooltip } from "@/components/ui/tooltip";
 import { Box } from "@chakra-ui/react";

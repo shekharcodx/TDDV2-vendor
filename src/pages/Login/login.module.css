@@ -1,17 +1,3 @@
-:root {
-  --charcoal-blue-grey: #27343a;
-  --slate-gray-secondary: #5b787c;
-  --misty-teal: #89b4bc;
-  --light-gray: #cecccd;
-  --neutral-bg: #efeeea;
-
-  --gradient-background: linear-gradient(
-    90deg,
-    rgba(91, 120, 124, 1) 0%,
-    rgba(137, 180, 188, 1) 35%
-  );
-}
-
 /* Wrapper centers the content */
 .signinWrapper {
   display: flex;
@@ -33,7 +19,7 @@
   border-radius: 12px;
   background: var(--neutral-bg);
   padding: 36px 32px; /* More balanced padding top-bottom and left-right */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 24px rgba(39, 52, 58, 0.15);
   border: 1px solid #ddd; /* ✅ Added border */
 }
 
@@ -138,3 +124,7 @@
   color: #fff;
 }
 
+.errorMsg {
+  margin-top: 5px;
+  color: red;
+}

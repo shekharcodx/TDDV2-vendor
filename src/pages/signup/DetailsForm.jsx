@@ -4,30 +4,32 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { resetRegistration } from "../../../app/slices/registrationSlice";
-import { useRegisterMutation } from "../../../app/api/authApi";
+import { resetRegistration } from "@/app/slices/registrationSlice";
+import { useRegisterMutation } from "@/app/api/authApi";
 import { toaster } from "@/components/ui/toaster";
 import styles from "./signup.module.css";
+
+const pdfFileSchema = (fieldName) =>
+  z
+    .any()
+    .refine((files) => files && files.length > 0, `${fieldName} is required`)
+    .refine(
+      (files) =>
+        Array.from(files).every((file) => file.type === "application/pdf"),
+      "Only PDF files are allowed"
+    );
 
 // ✅ Zod schema for step 2
 const schema = z.object({
   fleetSize: z
     .string()
     .refine((val) => Number(val) > 0, "Fleet size must be a positive number"),
-  ijariCertificate: z
-    .any()
-    .refine((file) => file?.length > 0, "Ijari Certificate is required"),
-  tradeLicense: z
-    .any()
-    .refine((file) => file?.length > 0, "Trade License is required"),
-  vatCertificate: z
-    .any()
-    .refine((file) => file?.length > 0, "VAT Certificate is required"),
-  noc: z.any().refine((file) => file?.length > 0, "NOC is required"),
-  emiratesId: z
-    .any()
-    .refine((file) => file?.length > 0, "Emirates ID is required"),
-  poa: z.any().refine((file) => file?.length > 0, "POA is required"),
+  ijariCertificate: pdfFileSchema("Ijari Certificate"),
+  tradeLicense: pdfFileSchema("Trade License"),
+  vatCertificate: pdfFileSchema("Vat Certificate"),
+  noc: pdfFileSchema("NOC"),
+  emiratesId: pdfFileSchema("Emirates Id"),
+  poa: pdfFileSchema("POA"),
   termsAccepted: z.literal(true, {
     errorMap: () => ({ message: "You must accept the terms" }),
   }),
@@ -58,15 +60,15 @@ export default function DetailsForm() {
       formData.append("role", registration.role || "2");
       formData.append("businessName", registration.businessName);
 
-      formData.append("city", registration.address.city); // ID
-      formData.append("street", registration.address.street);
-      formData.append("state", registration.address.state); // ID
-      formData.append("country", registration.address.country); // ID
-      formData.append("mapUrl", registration.address.mapUrl);
+      formData.append("city", registration.city); // ID
+      formData.append("street", registration.street);
+      formData.append("state", registration.state); // ID
+      formData.append("country", registration.country); // ID
+      formData.append("mapUrl", registration.mapUrl);
 
-      formData.append("mobileNum", registration.contact.mobileNum);
-      formData.append("whatsappNum", registration.contact.whatsappNum);
-      formData.append("landlineNum", registration.contact.landlineNum);
+      formData.append("mobileNum", registration.mobileNum);
+      formData.append("whatsappNum", registration.whatsappNum);
+      formData.append("landlineNum", registration.landlineNum);
 
       // ✅ Step 2 fields
       formData.append("fleetSize", data.fleetSize);

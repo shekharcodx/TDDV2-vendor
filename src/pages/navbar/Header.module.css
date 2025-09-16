@@ -1,6 +1,6 @@
 .topHeader {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   padding: 14px 30px;
   background-color: white;
@@ -11,14 +11,19 @@
   z-index: 100;
 }
 
+@media (max-width: 700px) {
+  .topHeader {
+    justify-content: space-between;
+  }
+}
+
 .leftSection {
-  display: flex;
   align-items: center;
   gap: 20px;
 }
 
 .logo {
-  height: 40px;   /* adjust for your logo image */
+  height: 40px; /* adjust for your logo image */
   width: auto;
   cursor: pointer;
   display: block;
@@ -66,12 +71,12 @@
 /* Dropdown Styling */
 .dropdown {
   position: absolute;
-  top: 60px;         /* neatly below avatar */
+  top: 60px; /* neatly below avatar */
   right: 20px;
   background: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
   width: 180px;
   animation: fadeIn 0.2s ease-in-out;
   z-index: 200;
@@ -104,6 +109,12 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

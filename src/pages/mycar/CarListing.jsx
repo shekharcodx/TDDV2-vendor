@@ -21,7 +21,7 @@ import {
   useGetCarTechFeaturesQuery,
   useGetCarOtherFeaturesQuery,
   useAddCarListingMutation,
-} from "../../../app/api/carListingApi";
+} from "@/app/api/carListingApi";
 
 const CarListing = () => {
   // 🔹 Queries

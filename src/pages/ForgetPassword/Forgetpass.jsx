@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useForgetPasswordMutation } from "../../../app/api/authApi";
+import { useForgetPasswordMutation } from "@/app/api/authApi";
 import { toaster } from "@/components/ui/toaster";
 import styles from "./forget.module.css";
 
@@ -21,7 +21,7 @@ const ForgetPassword = () => {
 
     // ✅ call API with proper toaster options
     toaster.promise(
-      forgetPassword(email).unwrap(),
+      forgetPassword({ email, role: 2 }).unwrap(),
       {
         loading: { title: "Sending Reset Link", description: " " },
         success: (res) => {
@@ -79,7 +79,7 @@ const ForgetPassword = () => {
           </button>
 
           <h6 className={styles.orText}>OR</h6>
-          <Link to="/sign-in" className={styles.forgetLink}>
+          <Link to="/login" className={styles.forgetLink}>
             Back to Sign In
           </Link>
         </form>

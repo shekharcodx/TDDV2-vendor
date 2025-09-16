@@ -17,7 +17,7 @@
 //   useGetCarOtherFeaturesQuery,
 //     useCreateListingMutation,
 
-// } from "../../../app/api/carListingApi";
+// } from "@/app/api/carListingApi";
 
 // const CarListing = () => {
 //   // 🔹 Brand → Model → Trim → Year
@@ -106,7 +106,6 @@
 //     setImages((prev) => [...prev, ...newImages]);
 //   };
 //   const [createListing, { isLoading: isSaving }] = useCreateListingMutation();
-
 
 //   console.log("CarListing:", { models, trims, years });
 
@@ -482,7 +481,7 @@
 //   useGetCarOtherFeaturesQuery,
 //   useGetBodyTypesQuery,
 //   useCreateListingMutation,
-// } from "../../../app/api/carListingApi";
+// } from "@/app/api/carListingApi";
 
 // const CarListing = () => {
 //   // 🔹 Brand → Model → Trim → Year

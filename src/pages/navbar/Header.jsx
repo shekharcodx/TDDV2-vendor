@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Avatar, Button, Menu, Portal } from "@chakra-ui/react";
 import { FaBars } from "react-icons/fa";
 import { toaster } from "@/components/ui/toaster";
-import { baseApi } from "../../../app/api/baseApi";
+import { baseApi } from "@/app/api/baseApi";
 import { useDispatch } from "react-redux";
 import {
   removeToken,
@@ -47,15 +47,16 @@ const Header = ({ isOpen, setIsOpen }) => {
 
   return (
     <div className={styles.topHeader} style={{ zIndex: 999 }}>
-      <div className={styles.leftSection}>
+      <div className={`${styles.leftSection} block md:hidden`}>
         <img src={logo} alt="logo" className={styles.logo} />
       </div>
 
       <Button
         display={{ base: "block", md: "none" }}
+        variant="ghost"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <FaBars />
+        <FaBars color="rgba(91, 120, 124, 1)" />
       </Button>
 
       <div className={styles.rightSection} ref={dropdownRef}>

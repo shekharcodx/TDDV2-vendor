@@ -1,8 +1,7 @@
-                                                            /* Wrapper with sidebar space */
+/* Wrapper with sidebar space */
 .wrapper {
   font-family: "Segoe UI", sans-serif;
   padding: 20px;
-  margin-left: 220px; /* space for sidebar */
   min-height: 100vh;
   color: #212529;
 }
@@ -35,7 +34,7 @@
   background: rgba(255, 193, 7, 0.15); /* soft amber */
   color: #b8860b;
   border: 1px solid rgba(255, 193, 7, 0.35);
-  box-shadow:  #b8860b;
+  box-shadow: #b8860b;
 }
 
 /* Hold */
@@ -288,4 +287,3 @@
     height: 50px;
   }
 }
-

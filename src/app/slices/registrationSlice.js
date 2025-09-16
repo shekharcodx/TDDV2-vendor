@@ -6,23 +6,17 @@ const initialState = {
   role: "2", // default to vendor
   businessName: "",
 
-  address: {
-    street: "",
-    city: "",
-    state: "",
-    country: "",
-    mapUrl: "",
-  },
+  street: "",
+  city: "",
+  state: "",
+  country: "",
+  mapUrl: "",
 
-  contact: {
-    mobileNum: "",
-    landlineNum: "",
-    whatsappNum: "",
-  },
+  mobileNum: "",
+  landlineNum: "",
+  whatsappNum: "",
 
-  vendorInformation: {
-    fleetSize: "",
-  },
+  fleetSize: "",
 
   ijariCertificate: "",
   tradeLicense: "",
@@ -40,8 +34,14 @@ const registrationSlice = createSlice({
     updateRegistrationField: (state, action) => {
       const payload = action.payload;
 
+      console.log({ payload });
+
       Object.keys(payload).forEach((key) => {
-        if (typeof payload[key] === "object" && !Array.isArray(payload[key]) && state[key]) {
+        if (
+          typeof payload[key] === "object" &&
+          !Array.isArray(payload[key]) &&
+          state[key]
+        ) {
           state[key] = { ...state[key], ...payload[key] };
         } else {
           state[key] = payload[key];
@@ -52,5 +52,6 @@ const registrationSlice = createSlice({
   },
 });
 
-export const { updateRegistrationField, resetRegistration } = registrationSlice.actions;
+export const { updateRegistrationField, resetRegistration } =
+  registrationSlice.actions;
 export default registrationSlice.reducer;

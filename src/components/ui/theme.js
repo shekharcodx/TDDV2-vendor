@@ -2,6 +2,7 @@
 import { createSystem, defaultConfig } from "@chakra-ui/react";
 
 const chakraTheme = createSystem(defaultConfig, {
+  preflight: false,
   theme: {
     tokens: {
       colors: {

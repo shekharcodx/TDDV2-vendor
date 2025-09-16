@@ -22,7 +22,7 @@ import {
   useGetCarTechFeaturesQuery,
   useGetCarOtherFeaturesQuery,
   useUpdateCarListingMutation,
-} from "../../../app/api/carListingApi";
+} from "@/app/api/carListingApi";
 
 const EditCar = () => {
   const location = useLocation();

@@ -5,7 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { updateRegistrationField } from "../../../app/slices/registrationSlice";
+import { updateRegistrationField } from "@/app/slices/registrationSlice";
 
 import indiaFlag from "../../assets/india-flag.png";
 import uaeFlag from "../../assets/uae-flag.png";
@@ -14,7 +14,7 @@ import {
   useGetCountriesQuery,
   useLazyGetStatesQuery,
   useLazyGetcitiesQuery,
-} from "../../../app/api/locationApi";
+} from "@/app/api/locationApi";
 
 // const countries = [
 //   { name: "India", code: "+91", flag: indiaFlag },
@@ -239,7 +239,7 @@ const SignupForm = () => {
         </div>
 
         {/* ✅ Next button disabled until form is valid */}
-        <button type="submit" className={styles.nextButton} >
+        <button type="submit" className={styles.nextButton}>
           Next
         </button>
       </form>

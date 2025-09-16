@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useResetPasswordMutation } from "../../../app/api/authApi";
+import { useResetPasswordMutation } from "@/app/api/authApi";
 import { toaster } from "@/components/ui/toaster";
 import styles from "./reset.module.css";
 
@@ -47,7 +47,10 @@ const Resetpass = () => {
       return;
     }
 
-    const promise = resetPassword({ token, newPassword: data.password }).unwrap();
+    const promise = resetPassword({
+      token,
+      newPassword: data.password,
+    }).unwrap();
 
     toaster.promise(promise, {
       loading: { title: "Resetting Password...", description: "Please wait" },
@@ -119,7 +122,9 @@ const Resetpass = () => {
               </button>
             </div>
             {errors.confirmPassword && (
-              <p className={styles.errorText}>{errors.confirmPassword.message}</p>
+              <p className={styles.errorText}>
+                {errors.confirmPassword.message}
+              </p>
             )}
           </div>
 
@@ -129,7 +134,9 @@ const Resetpass = () => {
             className={styles.submitBtn}
             disabled={isLoading}
             style={
-              isLoading ? { backgroundColor: "#ccc", cursor: "not-allowed" } : {}
+              isLoading
+                ? { backgroundColor: "#ccc", cursor: "not-allowed" }
+                : {}
             }
           >
             {isLoading ? "Resetting..." : "Reset Password"}

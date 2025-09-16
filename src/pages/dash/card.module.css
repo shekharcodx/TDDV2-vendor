@@ -4,7 +4,6 @@
   padding: 10px;
   background: #f9f9f9;
   flex-wrap: wrap; /* ✅ makes it responsive */
-  margin-left: 200px;
   box-sizing: border-box;
   width: calc(100% - 200px);
 }

@@ -3,13 +3,9 @@
 import React, { useState } from "react";
 import styles from "./login.module.css";
 import { Link, useNavigate } from "react-router-dom";
-import { useLoginMutation } from "../../../app/api/authApi";
+import { useLoginMutation } from "@/app/api/authApi";
 import { toaster } from "@/components/ui/toaster";
-import {
-  setToken,
-  setUserRole,
-  setUser,
-} from "@/utils/localStorageMethods";
+import { setToken, setUserRole, setUser } from "@/utils/localStorageMethods";
 import { Eye, EyeOff } from "lucide-react";
 
 // form + validation
@@ -80,9 +76,7 @@ const Login = () => {
                 placeholder="Enter your email"
               />
               {errors.email && (
-                <span className={styles.errorMsg}>
-                  {errors.email.message}
-                </span>
+                <span className={styles.errorMsg}>{errors.email.message}</span>
               )}
             </div>
 
@@ -126,14 +120,17 @@ const Login = () => {
             </button>
 
             {/* Only Forget Password link */}
-            <Link to="/forget-passgit" className={styles.forgetLink}>
+            <Link to="/forget-password" className={styles.forgetLink}>
               Forgot Password?
             </Link>
             {/* Register Link */}
-<Link to="/register" className={styles.forgetLink} style={{ marginTop: "8px" }}>
-  Create Account
-</Link>
-
+            <Link
+              to="/register"
+              className={styles.forgetLink}
+              style={{ marginTop: "8px" }}
+            >
+              Create Account
+            </Link>
           </form>
         </div>
       </div>

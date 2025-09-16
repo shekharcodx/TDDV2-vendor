@@ -3,7 +3,6 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "../sidebar/Sidebar";
 import Header from "../navbar/Header"; // ← Import Header component
 import styles from "./Layout.module.css";
-import { useDisclosure } from "@chakra-ui/react";
 
 const Layout = () => {
   const [isOpen, setIsOpen] = useState(false);

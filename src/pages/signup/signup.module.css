@@ -1,22 +1,7 @@
-/* Variables */
-:root {
-  --charcoal-blue-grey: #27343A;
-  --slate-gray-secondary: #5B787C;
-  --misty-teal: #89B4BC;
-  --light-gray: #CECCCD;
-  --neutral: #EFEEEA;
-
-  --gradient-background: linear-gradient(
-    90deg,
-    rgba(91, 120, 124, 1) 0%,
-    rgba(137, 180, 188, 1) 35%
-  );
-}
-
 /* PAGE WRAPPER */
 .pageWrapper {
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background: var(--neutral-bg);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -30,7 +15,7 @@
   max-width: 720px;
   margin: 0 auto;
   padding: 3rem 2rem;
-  background-color: var(--neutral);
+  background: var(--neutral-bg);
   border-radius: 12px;
   border: 1px solid var(--light-gray);
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
@@ -155,13 +140,14 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease-in-out, transform 0.2s ease;
   margin-top: 1rem;
 }
 
 .nextButton:hover {
-  background: var(--slate-gray-secondary);
-  transform: scale(1.02);
+  opacity: 0.9;
+  /* background: var(--slate-gray-secondary); */
+  /* transform: scale(1.02); */
 }
 
 .nextButton:disabled {
@@ -179,7 +165,6 @@
 .halfInput {
   min-width: unset; /* remove forced 250px */
 }
-
 
 /* Responsive */
 @media (max-width: 768px) {

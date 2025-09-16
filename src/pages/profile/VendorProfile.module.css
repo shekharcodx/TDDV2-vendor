@@ -1,6 +1,6 @@
 /* Page Container */
 .page {
-  background: #f4f6f8;
+  /* background: #f4f6f8; */
   box-sizing: border-box;
   display: flex;
   justify-content: center;
