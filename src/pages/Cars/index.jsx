@@ -5,12 +5,12 @@ import { MenuIcon } from "lucide-react";
 import { useGetVendorListingsQuery } from "@/app/api/carListingApi";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import styles from "./Listing.module.css";
+import styles from "./Cars.module.css";
 import FilterSelect from "@/components/FilterSelect";
 import { listingStatuses, isActiveStatus, getKeyNames } from "@/utils/helper";
 import FilterResetBtn from "@/components/FilterResetBtn";
 
-const AllListings = () => {
+const AllCars = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [selectedStatus, setSelectedStatus] = useState([]);
@@ -139,17 +139,19 @@ const AllListings = () => {
           <Portal>
             <Menu.Positioner>
               <Menu.Content>
-                {/* <Menu.Item
+                <Menu.Item
                   value="view"
                   cursor="pointer"
-                  onClick={() => navigate(`/car-listings/view/${listing._id}`)}
+                  onClick={() => navigate(`/cars/view/${listing._id}`)}
                 >
                   View
-                </Menu.Item> */}
+                </Menu.Item>
                 <Menu.Item
                   value="edit"
                   cursor="pointer"
-                  onClick={() => navigate("/edit", { state: { car: listing } })}
+                  onClick={() =>
+                    navigate("/cars/edit", { state: { car: listing } })
+                  }
                 >
                   Edit
                 </Menu.Item>
@@ -223,4 +225,4 @@ const SkeletonRow = () => {
   );
 };
 
-export default AllListings;
+export default AllCars;

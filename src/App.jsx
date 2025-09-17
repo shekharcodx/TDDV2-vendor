@@ -2,7 +2,7 @@ import React from "react";
 
 import Layout from "@/pages/layout/Layout";
 import Profile from "@/pages/profile/Profile";
-import CarListing from "@/pages/mycar/CarListing";
+import CreateCar from "@/pages/Cars/CreateCar";
 import DashboardPage from "@/pages/dash/DashboardPage";
 import Cards from "@/pages/dash/Cards";
 import { useRoutes } from "react-router-dom";
@@ -12,16 +12,17 @@ import Unauthorized from "@/components/unauthorised";
 import ErrorPage from "@/components/ErrorPage";
 import DetailsForm from "@/pages/signup/DetailsForm";
 import SignupForm from "@/pages/signup/SignupForm";
-import AllListings from "@/pages/mycar/AllListings";
+import AllCars from "@/pages/Cars";
 import Login from "@/pages/Login/Login";
 import ForgetPassword from "@/pages/ForgetPassword/Forgetpass";
 import Resetpass from "@/pages/ResetPassword/Resetpass";
 import ChangePass from "@/pages/ChangePassword/ChangePass";
-import EditCar from "./pages/mycar/EditCar";
+import EditCar from "./pages/Cars/EditCar";
 // Optional: Keep only if used in future
 
 import Details from "./pages/signup/DetailsForm";
 import PagesLayout from "./pages/layout/PagesLayout";
+import ViewCar from "./pages/Cars/ViewCar";
 
 // 🔧 FIX: Import missing UserForm if it's created
 // import UserForm from "./pages/spam/UserForm"; // ← Only if this file exists
@@ -43,15 +44,20 @@ function App() {
               path: "/cars",
               element: <PagesLayout />,
               children: [
-                { index: true, element: <AllListings /> },
+                { index: true, element: <AllCars /> },
+                { path: "view/:id", element: <ViewCar /> },
                 {
                   path: "create",
-                  element: <CarListing />,
+                  element: <CreateCar />,
+                },
+                {
+                  path: "edit",
+                  element: <EditCar />,
                 },
               ],
             },
-            { path: "my-listings", element: <AllListings /> },
-            { path: "/edit", element: <EditCar /> },
+            // { path: "my-listings", element: <AllListings /> },
+            // { path: "/edit", element: <EditCar /> },
             { path: "card", element: <Cards /> },
           ],
         },
@@ -69,22 +75,6 @@ function App() {
   ];
 
   return useRoutes(routes);
-
-  // <Router>
-  //   <Routes>
-  //     <Route path="/" element={<Layout />}>
-  //        <Route index element={<DashboardPage/>} />
-  //       <Route path="/profile" element={<Profile />} />
-  //       {/* Uncomment the next line if UserForm is implemented and imported */}
-  //       {/* <Route path="user-form" element={<UserForm />} /> */}
-  //       <Route path="car-listing" element={<CarListing />} />
-  //       <Route path="admin-car" element={<CarListing />} />
-  //       <Route path="/car-listing" element={<CarListing />} />
-  //       <Route path="/card" element={<Cards />} />
-  //       <Route path="/DashboardPage" element={<DashboardPage />} />
-  //     </Route>
-  //   </Routes>
-  // </Router>
 }
 
 export default App;

@@ -155,11 +155,11 @@ const Profile = () => {
   return (
     <Box p={{ base: 0, md: "20px" }}>
       <div className={styles.page}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
           <div
             className={`${styles.card} ${
               isEditing ? styles.editMode : styles.viewMode
-            } max-w-[750px] md:min-w-[750px]`}
+            } md:min-w-[750px]`}
           >
             {/* Header */}
             <div className={styles.header}>
@@ -205,10 +205,12 @@ const Profile = () => {
                   <>
                     <input
                       type="text"
-                      {...register("name")}
-                      className={`${styles.inputEdit} block !w-[350px]`}
+                      {...register("businessName")}
+                      className={styles.inputEdit}
                     />
-                    <div className="text-red-600">{errors?.name?.message}</div>
+                    <div className="text-red-600">
+                      {errors?.businessName?.message}
+                    </div>
                     <input
                       type="email"
                       {...register("email")}
@@ -221,7 +223,9 @@ const Profile = () => {
                     {isFetching ? (
                       <Skeleton variant="shine" width="200px" height="15px" />
                     ) : (
-                      <h2 className={styles.name}>{profileData?.data?.name}</h2>
+                      <h2 className={styles.name}>
+                        {profileData?.data?.businessName}
+                      </h2>
                     )}
                     {isFetching ? (
                       <Skeleton
@@ -251,16 +255,16 @@ const Profile = () => {
                   marginBottom={{ base: "20px" }}
                   className={styles.infoItem}
                 >
-                  <strong>Business Name</strong>
+                  <strong>Vendor Admin Name</strong>
                   {isEditing ? (
                     <>
                       <input
                         type="text"
-                        {...register("businessName")}
-                        className={styles.inputEdit}
+                        {...register("name")}
+                        className={`${styles.inputEdit} block !w-[350px]`}
                       />
                       <div className="text-red-600">
-                        {errors?.businessName?.message}
+                        {errors?.name?.message}
                       </div>
                     </>
                   ) : isFetching ? (
@@ -271,7 +275,7 @@ const Profile = () => {
                       mt="10px"
                     />
                   ) : (
-                    profileData?.data?.businessName
+                    profileData?.data?.name
                   )}
                 </Box>
 

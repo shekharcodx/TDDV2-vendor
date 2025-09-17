@@ -61,5 +61,7 @@ export const baseApi = createApi({
     "TechFeatures",
     "OtherFeatures",
     "profile",
+    "Categories",
+    "VendorCar",
   ],
 });

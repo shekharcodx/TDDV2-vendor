@@ -10,11 +10,22 @@ const carApi = baseApi.injectEndpoints({
     }),
     getModels: builder.query({
       query: (brandId) => ({ url: `/carModels/${brandId}`, method: "GET" }),
-      providesTags: (result, error, brandId) => [{ type: "CarModels", id: brandId }],
+      providesTags: (result, error, brandId) => [
+        { type: "CarModels", id: brandId },
+      ],
     }),
     getCarTrims: builder.query({
       query: (modelId) => ({ url: `/carTrims/${modelId}`, method: "GET" }),
-      providesTags: (result, error, modelId) => [{ type: "CarTrims", id: modelId }],
+      providesTags: (result, error, modelId) => [
+        { type: "CarTrims", id: modelId },
+      ],
+    }),
+    getCarCategories: builder.query({
+      query: () => ({
+        url: "/carCategories",
+        method: "GET",
+      }),
+      providesTags: ["Categories"],
     }),
     getYears: builder.query({
       query: () => ({ url: "/years", method: "GET" }),
@@ -70,13 +81,22 @@ const carApi = baseApi.injectEndpoints({
         method: "POST",
         body: formData,
       }),
+      invalidatesTags: ["VendorCar", "VendorListings"],
+    }),
+    getcarListing: builder.query({
+      query: (listingId) => ({
+        url: `listing/${listingId}`,
+        method: "GET",
+      }),
+      providesTags: ["VendorCar"],
     }),
     updateCarListing: builder.mutation({
-      query: ({ id, body }) => ({
-        url: `/listing/${id}`,
+      query: ({ listingId, data }) => ({
+        url: `/vendorListing/${listingId}`,
         method: "PUT",
-        body,
+        body: data,
       }),
+      invalidatesTags: ["VendorCar", "VendorListings"],
     }),
 
     // ✅ Vendor Listings with filters
@@ -104,6 +124,7 @@ export const {
   useGetCarBrandsQuery,
   useLazyGetModelsQuery,
   useLazyGetCarTrimsQuery,
+  useGetCarCategoriesQuery,
   useLazyGetYearsQuery,
   useGetBodyTypesQuery,
   useGetCarRegionalSpecsQuery,
@@ -115,6 +136,7 @@ export const {
   useGetFuelTypesQuery,
   useGetCarTechFeaturesQuery,
   useGetCarOtherFeaturesQuery,
+  useLazyGetcarListingQuery,
   useAddCarListingMutation,
   useUpdateCarListingMutation,
   useGetVendorListingsQuery,

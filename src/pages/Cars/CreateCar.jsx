@@ -1,0 +1,728 @@
+import React, { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import styles from "./CreateCar.module.css";
+import { toaster } from "@/components/ui/toaster";
+
+import {
+  useGetCarBrandsQuery,
+  useLazyGetModelsQuery,
+  useLazyGetCarTrimsQuery,
+  useGetCarCategoriesQuery,
+  useLazyGetYearsQuery,
+  useGetCarRegionalSpecsQuery,
+  useGetCarHorsePowersQuery,
+  useGetCarSeatingCapacitiesQuery,
+  useGetCarColorsQuery,
+  useGetCarDoorsQuery,
+  useGetTransmissionsQuery,
+  useGetBodyTypesQuery,
+  useGetFuelTypesQuery,
+  useGetCarTechFeaturesQuery,
+  useGetCarOtherFeaturesQuery,
+  useAddCarListingMutation,
+} from "@/app/api/carListingApi";
+import { Box, Heading, Text } from "@chakra-ui/react";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
+
+const addCarSchema = z.object({
+  title: z.string().min(2, "Title is required"),
+  description: z
+    .string()
+    .min(10, "Description should be at least 10 characters"),
+  rentPerDay: z.coerce
+    .number()
+    .positive("Rent per day must be a positive number"),
+  rentPerWeek: z.coerce
+    .number()
+    .positive("Rent per week must be a positive number"),
+  rentPerMonth: z.coerce
+    .number()
+    .positive("Rent per month must be a positive number"),
+  carInsurance: z.enum(["yes", "no"], {
+    required_error: "Car insurance is required",
+  }),
+  warranty: z.enum(["yes", "no"], { required_error: "Warranty is required" }),
+  mileage: z.coerce.number().nonnegative("Mileage must be 0 or more"),
+  location: z.string().min(2, "Location is required"),
+  carBrand: z.string().min(1, "Brand is required"),
+  carModel: z.string().min(1, "Model is required"),
+  carTrim: z.string().min(1, "Trim is required"),
+  carCategory: z.string().min(1, "Category is required"),
+  modelYear: z.string().min(1, "Year is required"),
+  regionalSpecs: z.string().min(1, "Regional specs is required"),
+  horsePower: z.string().min(1, "Horse power is required"),
+  seatingCapacity: z.string().min(1, "Seating capacity is required"),
+  interiorColor: z.string().min(1, "Interior color is required"),
+  exteriorColor: z.string().min(1, "Exterior color is required"),
+  carDoors: z.string().min(1, "Doors is required"),
+  transmission: z.string().min(1, "Transmission is required"),
+  bodyType: z.string().min(1, "Body type is required"),
+  fuelType: z.string().min(1, "Fuel type is required"),
+  techFeatures: z.array(z.string()).optional(),
+  otherFeatures: z.array(z.string()).optional(),
+  images: z
+    .any()
+    .refine(
+      (files) => files instanceof FileList && files.length > 0,
+      "At least one image is required"
+    )
+    .transform((files) => Array.from(files)),
+});
+
+const CreateCar = () => {
+  const navigate = useNavigate();
+  // 🔹 Queries
+  const { data: brands } = useGetCarBrandsQuery();
+  const [fetchModels, { data: models }] = useLazyGetModelsQuery();
+  const [fetchTrims, { data: trims }] = useLazyGetCarTrimsQuery();
+  const [fetchYears, { data: years }] = useLazyGetYearsQuery();
+  const { data: categories } = useGetCarCategoriesQuery();
+  const { data: regionalSpecs } = useGetCarRegionalSpecsQuery();
+  const { data: horsePowers } = useGetCarHorsePowersQuery();
+  const { data: seatingCapacities } = useGetCarSeatingCapacitiesQuery();
+  const { data: colors } = useGetCarColorsQuery();
+  const { data: doors } = useGetCarDoorsQuery();
+  const { data: transmissions } = useGetTransmissionsQuery();
+  const { data: bodyTypes } = useGetBodyTypesQuery();
+  const { data: fuelTypes } = useGetFuelTypesQuery();
+  const { data: techFeatures } = useGetCarTechFeaturesQuery();
+  const { data: otherFeatures } = useGetCarOtherFeaturesQuery();
+
+  const [addCarListing, { isLoading }] = useAddCarListingMutation();
+
+  // 🔹 Hook Form
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(addCarSchema),
+    defaultValues: {
+      carBrand: "",
+      carModel: "",
+      carTrim: "",
+      modelYear: "",
+      regionalSpecs: "",
+      horsePower: "",
+      seatingCapacity: "",
+      interiorColor: "",
+      exteriorColor: "",
+      carDoors: "",
+      transmission: "",
+      bodyType: "",
+      fuelType: "",
+      techFeatures: [],
+      otherFeatures: [],
+      images: [],
+      title: "",
+      description: "",
+      rentPerDay: "",
+      rentPerWeek: "",
+      rentPerMonth: "",
+      carInsurance: "",
+      warranty: "",
+      mileage: "",
+      location: "",
+    },
+  });
+  const [selectedImages, setSelectedImages] = useState([]);
+
+  // 🔹 Cascading dropdowns
+  const selectedBrand = watch("carBrand");
+  const selectedModel = watch("carModel");
+
+  useEffect(() => {
+    if (selectedBrand) {
+      setValue("carModel", "");
+      setValue("carTrim", "");
+      setValue("modelYear", "");
+      fetchModels(selectedBrand);
+    }
+  }, [selectedBrand]);
+
+  useEffect(() => {
+    if (selectedModel) {
+      setValue("carTrim", "");
+      setValue("modelYear", "");
+      fetchTrims(selectedModel);
+      fetchYears(selectedModel);
+    }
+  }, [selectedModel]);
+
+  // 🔹 Image handler
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    const newImages = files.map((file) => ({
+      file,
+      name: file.name,
+      url: URL.createObjectURL(file),
+    }));
+    // setValue("images", [...images, ...newImages]);
+    setSelectedImages(newImages);
+  };
+
+  // 🔹 Submit
+  const onSubmit = (data) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (key === "images") {
+        value.forEach((img) => formData.append("images", img));
+      } else if (Array.isArray(value)) {
+        value.forEach((v) => formData.append(key + "[]", v));
+      } else {
+        formData.append(key, value);
+      }
+    });
+
+    toaster.promise(addCarListing(formData).unwrap(), {
+      loading: { title: "Saving Car...", description: "Please wait..." },
+      success: (res) => {
+        navigate("/cars");
+        return {
+          title: res?.message || "Car saved successfully!",
+          description: "",
+        };
+      },
+      error: (err) => {
+        return {
+          title: err?.data?.message || "Failed to save car.",
+          description: "",
+        };
+      },
+    });
+  };
+
+  return (
+    <Box mb="10px" borderBottom="1px solid #fff5">
+      <Heading fontSize="24px" fontWeight="600" mb="30px">
+        Add Car
+      </Heading>
+      <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+        {/* Title, Description, Rent, Insurance, Mileage, Location */}
+        <div className={`${styles.formGroup}`}>
+          <div>
+            <input
+              className={styles.input}
+              placeholder="Title"
+              {...register("title")}
+            />
+            {errors.title && (
+              <p className="text-red-500 text-sm">{errors.title.message}</p>
+            )}
+          </div>
+          <div>
+            <textarea
+              className={`${styles.input} ${styles.textarea}`}
+              placeholder="Description"
+              rows={4}
+              {...register("description")}
+            />
+            {errors.description && (
+              <p className="text-red-500 text-sm">
+                {errors.description.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className={`${styles.grid} ${styles.gapTop} mt-2`}>
+          <div>
+            <input
+              className={styles.input}
+              placeholder="Rent per Day"
+              {...register("rentPerDay")}
+            />
+            {errors.rentPerDay && (
+              <p className="text-red-500 text-sm">
+                {errors.rentPerDay.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <input
+              className={styles.input}
+              placeholder="Rent per Week"
+              {...register("rentPerWeek")}
+            />
+            {errors.rentPerWeek && (
+              <p className="text-red-500 text-sm">
+                {errors.rentPerWeek.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <input
+              className={styles.input}
+              placeholder="Rent per Month"
+              {...register("rentPerMonth")}
+            />
+            {errors.rentPerMonth && (
+              <p className="text-red-500 text-sm">
+                {errors.rentPerMonth.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className={styles.grid}>
+          <label className={styles.labelWrapper}>
+            Car Insurance
+            <select {...register("carInsurance")} className={styles.select}>
+              <option value="">Car Insurance</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+            {errors.carInsurance && (
+              <p className="text-red-500 text-sm">
+                {errors.carInsurance.message}
+              </p>
+            )}
+          </label>
+          <label className={styles.labelWrapper}>
+            Warranty
+            <select {...register("warranty")} className={styles.select}>
+              <option value="">Warranty</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+            {errors.warranty && (
+              <p className="text-red-500 text-sm">{errors.warranty.message}</p>
+            )}
+          </label>
+        </div>
+
+        <div className={styles.grid}>
+          <div>
+            <input
+              className={styles.input}
+              placeholder="Mileage"
+              type="number"
+              {...register("mileage")}
+            />
+            {errors.mileage && (
+              <p className="text-red-500 text-sm">{errors.mileage.message}</p>
+            )}
+          </div>
+          <div>
+            <input
+              className={styles.input}
+              placeholder="Location"
+              {...register("location")}
+            />
+            {errors.location && (
+              <p className="text-red-500 text-sm">{errors.location.message}</p>
+            )}
+          </div>
+        </div>
+        {/* Brand → Model → Trim → Year */}
+        <div className={styles.grid}>
+          <label className={styles.labelWrapper}>
+            Brand
+            <div className={styles.selectWrapper}>
+              <select {...register("carBrand")} className={styles.select}>
+                <option value="">Select Brand</option>
+                {(brands?.carBrands || []).map((brand) => (
+                  <option key={brand._id} value={brand._id}>
+                    {brand.name}
+                  </option>
+                ))}
+              </select>
+              {errors.carBrand && (
+                <p className="text-red-500 text-sm">
+                  {errors.carBrand.message}
+                </p>
+              )}
+            </div>
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Model
+            <div className={styles.selectWrapper}>
+              <select
+                {...register("carModel")}
+                className={styles.select}
+                disabled={!selectedBrand}
+              >
+                <option value="">Select Model</option>
+                {(models?.carModels || []).map((model) => (
+                  <option key={model._id} value={model._id}>
+                    {model.name}
+                  </option>
+                ))}
+              </select>
+              {errors.carModel && (
+                <p className="text-red-500 text-sm">
+                  {errors.carModel.message}
+                </p>
+              )}
+            </div>
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Trim
+            <div className={styles.selectWrapper}>
+              <select
+                {...register("carTrim")}
+                className={styles.select}
+                disabled={!selectedModel}
+              >
+                <option value="">Select Trim</option>
+                {(trims?.carTrims || []).map((trim) => (
+                  <option key={trim._id} value={trim._id}>
+                    {trim.name}
+                  </option>
+                ))}
+              </select>
+              {errors.carTrim && (
+                <p className="text-red-500 text-sm">{errors.carTrim.message}</p>
+              )}
+            </div>
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Year
+            <div className={styles.selectWrapper}>
+              <select
+                {...register("modelYear")}
+                className={styles.select}
+                disabled={!selectedModel}
+              >
+                <option value="">Select Year</option>
+                {(years?.years || []).map((year) => (
+                  <option key={year._id} value={year._id}>
+                    {year.year}
+                  </option>
+                ))}
+              </select>
+              {errors.modelYear && (
+                <p className="text-red-500 text-sm">
+                  {errors.modelYear.message}
+                </p>
+              )}
+            </div>
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Category
+            <div className={styles.selectWrapper}>
+              <select
+                {...register("carCategory")}
+                className={styles.select}
+                disabled={!selectedModel}
+              >
+                <option value="">Select Category</option>
+                {(categories?.categories || []).map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+              {errors.carCategory && (
+                <p className="text-red-500 text-sm">
+                  {errors.carCategory.message}
+                </p>
+              )}
+            </div>
+          </label>
+        </div>
+
+        {/* Next row: Regional Specs, Horse Power, Seating, Interior Color */}
+        <div className={styles.grid}>
+          <label className={styles.labelWrapper}>
+            Regional Specs
+            <div className={styles.selectWrapper}>
+              <select {...register("regionalSpecs")} className={styles.select}>
+                <option value="">Regional Specs</option>
+                {(regionalSpecs?.specs || []).map((spec) => (
+                  <option key={spec._id} value={spec._id}>
+                    {spec.name}
+                  </option>
+                ))}
+              </select>
+              {errors.regionalSpecs && (
+                <p className="text-red-500 text-sm">
+                  {errors.regionalSpecs.message}
+                </p>
+              )}
+            </div>
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Horse Power
+            <div className={styles.selectWrapper}>
+              <select {...register("horsePower")} className={styles.select}>
+                <option value="">Horse Power</option>
+                {(horsePowers?.horsePowers || []).map((hp) => (
+                  <option key={hp._id} value={hp._id}>
+                    {hp.power}
+                  </option>
+                ))}
+              </select>
+              {errors.horsePower && (
+                <p className="text-red-500 text-sm">
+                  {errors.horsePower.message}
+                </p>
+              )}
+            </div>
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Seating Capacity
+            <div className={styles.selectWrapper}>
+              <select
+                {...register("seatingCapacity")}
+                className={styles.select}
+              >
+                <option value="">Seating Capacity</option>
+                {(seatingCapacities?.seatingCapacities || []).map((sc) => (
+                  <option key={sc._id} value={sc._id}>
+                    {sc.seats}
+                  </option>
+                ))}
+              </select>
+              {errors.seatingCapacity && (
+                <p className="text-red-500 text-sm">
+                  {errors.seatingCapacity.message}
+                </p>
+              )}
+            </div>
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Interior Color
+            <div className={styles.selectWrapper}>
+              <select {...register("interiorColor")} className={styles.select}>
+                <option value="">Interior Color</option>
+                {(colors?.colors || []).map((c) => (
+                  <option key={c._id} value={c._id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+              {errors.interiorColor && (
+                <p className="text-red-500 text-sm">
+                  {errors.interiorColor.message}
+                </p>
+              )}
+            </div>
+          </label>
+
+          {/* Next row: Exterior Color, Doors, Transmission, Body Type */}
+          <label className={styles.labelWrapper}>
+            Exterior Color
+            <div className={styles.selectWrapper}>
+              <select {...register("exteriorColor")} className={styles.select}>
+                <option value="">Exterior Color</option>
+                {(colors?.colors || []).map((c) => (
+                  <option key={c._id} value={c._id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+              {errors.exteriorColor && (
+                <p className="text-red-500 text-sm">
+                  {errors.exteriorColor.message}
+                </p>
+              )}
+            </div>
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Doors
+            <div className={styles.selectWrapper}>
+              <select {...register("carDoors")} className={styles.select}>
+                <option value="">Select Doors</option>
+                {(doors?.doors || []).map((d) => (
+                  <option key={d._id} value={d._id}>
+                    {d.doors}
+                  </option>
+                ))}
+              </select>
+              {errors.carDoors && (
+                <p className="text-red-500 text-sm">
+                  {errors.carDoors.message}
+                </p>
+              )}
+            </div>
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Transmission
+            <div className={styles.selectWrapper}>
+              <select {...register("transmission")} className={styles.select}>
+                <option value="">Select Transmission</option>
+                {(transmissions?.transmissions || []).map((t) => (
+                  <option key={t._id} value={t._id}>
+                    {t.transmission}
+                  </option>
+                ))}
+              </select>
+              {errors.transmission && (
+                <p className="text-red-500 text-sm">
+                  {errors.transmission.message}
+                </p>
+              )}
+            </div>
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Body Type
+            <div className={styles.selectWrapper}>
+              <select {...register("bodyType")} className={styles.select}>
+                <option value="">Select Body Type</option>
+                {(bodyTypes?.bodyTypes || []).map((b) => (
+                  <option key={b._id} value={b._id}>
+                    {b.name}
+                  </option>
+                ))}
+              </select>
+              {errors.bodyType && (
+                <p className="text-red-500 text-sm">
+                  {errors.bodyType.message}
+                </p>
+              )}
+            </div>
+          </label>
+          {/* </div> */}
+
+          {/* Fuel Type */}
+          {/* <div className={styles.grid}> */}
+          <label className={styles.labelWrapper}>
+            Fuel Type
+            <div className={styles.selectWrapper}>
+              <select {...register("fuelType")} className={styles.select}>
+                <option value="">Select Fuel Type</option>
+                {(fuelTypes?.fuelTypes || []).map((f) => (
+                  <option key={f._id} value={f._id}>
+                    {f.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {errors.fuelType && (
+              <p className="text-red-500 text-sm">{errors.fuelType.message}</p>
+            )}
+          </label>
+        </div>
+
+        {/* Tech & Other Features */}
+        <div className={styles.sectionHeader}>Technical Features</div>
+        {/* <button
+          type="button"
+          onClick={() => setShowTechFeatures(!showTechFeatures)}
+          className={`${styles.toggleButton} ${styles.button}`}
+        >
+          {showTechFeatures ? "Hide Features" : "Add Features"}
+        </button> */}
+        {/* {showTechFeatures && ( */}
+        <div className={`flex justify-start items-baseline flex-wrap gap-x-3`}>
+          {techFeatures?.features?.length > 0 ? (
+            (techFeatures?.features || []).map((f) => (
+              <label key={f._id} className={styles.featureBox}>
+                <input
+                  type="checkbox"
+                  {...register("techFeatures")}
+                  value={f._id}
+                />
+                <span className="whitespace-nowrap">{f.name}</span>
+              </label>
+            ))
+          ) : (
+            <Text w="100%" textAlign="center">
+              No features available
+            </Text>
+          )}
+        </div>
+        {/* )} */}
+
+        <div className={styles.sectionHeader}>Other Features</div>
+        {/* <button
+          type="button"
+          onClick={() => setShowOtherFeatures(!showOtherFeatures)}
+          className={`${styles.toggleButton} ${styles.button}`}
+        >
+          {showOtherFeatures ? "Hide Features" : "Add Features"}
+        </button> */}
+        {/* {showOtherFeatures && ( */}
+        <div className={`flex justify-start items-baseline flex-wrap gap-x-3`}>
+          {otherFeatures?.features.length > 0 ? (
+            (otherFeatures?.features || []).map((f) => (
+              <label key={f._id} className={styles.featureBox}>
+                <input
+                  type="checkbox"
+                  {...register("otherFeatures")}
+                  value={f._id}
+                />
+                <span className="whitespace-nowrap">{f.name}</span>
+              </label>
+            ))
+          ) : (
+            <Text w="100%" textAlign="center">
+              No features available
+            </Text>
+          )}
+        </div>
+        {/* )} */}
+
+        {/* Images */}
+        <div className={styles.imageUploadSection}>
+          <div className={styles.sectionHeader}>Add Images</div>
+          <input
+            {...register("images", {
+              onChange: (e) => {
+                handleImageChange(e);
+              },
+            })}
+            id="file-upload"
+            type="file"
+            className={styles.fileInput}
+            multiple
+            hidden
+          />
+          <label htmlFor="file-upload" className={styles.uploadLabel}>
+            Choose Files
+          </label>
+
+          {errors.images && (
+            <p className="text-red-500 text-sm">{errors.images.message}</p>
+          )}
+          {/* {images.length > 0 && (
+            <div className={styles.imageToggleWrapper}>
+              <button
+                type="button"
+                onClick={() => setShowImages(!showImages)}
+                className={styles.toggleButton}
+              >
+                {showImages ? "Hide Images" : "Show Images"}
+              </button>
+            </div>
+          )}*/}
+          {selectedImages.length > 0 && (
+            <div className={styles.imagePreviewGrid}>
+              {selectedImages.map((img, idx) => (
+                <img
+                  key={idx}
+                  src={img.url}
+                  alt={img.name}
+                  className={styles.imagePreview}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div style={{ textAlign: "right", marginTop: "50px" }}>
+          <button className={styles.button} type="submit" disabled={isLoading}>
+            {isLoading ? "Saving..." : "Save Car"}
+          </button>
+        </div>
+      </form>
+    </Box>
+  );
+};
+
+export default CreateCar;
