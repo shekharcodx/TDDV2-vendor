@@ -145,7 +145,7 @@
 }
 
 .nextButton:hover {
-  opacity: 0.9;
+  transform: scale(1.02);
   /* background: var(--slate-gray-secondary); */
   /* transform: scale(1.02); */
 }

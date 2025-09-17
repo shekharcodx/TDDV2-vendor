@@ -87,7 +87,7 @@
 }
 
 .submitBtn:hover {
-  background: var(--slate-gray-secondary-two-color);
+  /* background: var(--slate-gray-secondary-two-color); */
   color: #fff;
 }
 

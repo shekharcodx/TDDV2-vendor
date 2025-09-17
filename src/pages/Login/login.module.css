@@ -99,7 +99,7 @@
 }
 
 .submitBtn:hover {
-  background: var(--slate-gray-secondary);
+  /* background: var(--slate-gray-secondary); */
   transform: scale(1.02);
 }
 

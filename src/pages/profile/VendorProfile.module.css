@@ -145,7 +145,7 @@
 /* Edit Button (View Mode) */
 /* neutral */
 .editModeBtn {
-  background-color: #5cbcbb !important;
+  background: var(--gradient-background) !important;
   color: #efeeea !important;
 }
 
@@ -157,7 +157,7 @@
 
 /* Save Button (Edit Mode) */
 .saveBtn {
-  background-color: #89b4bc; /* misty-teal */
+  background: var(--gradient-background); /* misty-teal */
   color: #fff; /* dark text */
 }
 

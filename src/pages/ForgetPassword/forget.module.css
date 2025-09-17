@@ -69,8 +69,10 @@
 }
 
 .submitBtn:hover {
-  background: var(--slate-gray-secondary-two-color);
+  /* background: var(--slate-gray-secondary-two-color); */
   color: #fff;
+  transform: scale(1.02);
+  cursor: pointer;
 }
 
 .submitBtn:disabled {
