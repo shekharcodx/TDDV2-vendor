@@ -45,6 +45,26 @@ const addCarSchema = z.object({
   }),
   warranty: z.enum(["yes", "no"], { required_error: "Warranty is required" }),
   mileage: z.coerce.number().nonnegative("Mileage must be 0 or more"),
+  airBags: z.coerce.number().nonnegative("Air Bags is required"),
+  tankCapacity: z.coerce.number().nonnegative("Tank Capacity is required"),
+  extraMileageRate: z.coerce
+    .number()
+    .nonnegative("Extra Mileage Rate is required"),
+  deliveryCharges: z.coerce
+    .number()
+    .nonnegative("Delivery Charges is required"),
+  tollCharges: z.coerce.number().nonnegative("Toll Charges is required"),
+  securityDeposit: z.coerce
+    .number()
+    .nonnegative("Security Deposit is required"),
+  dailyMileage: z.coerce.number().nonnegative("Daily Mileage is required"),
+  weeklyMileage: z.coerce.number().nonnegative("Weekly Mileage is required"),
+  monthlyMileage: z.coerce.number().nonnegative("Monthly Mileage is required"),
+  minRentalDays: z.coerce
+    .number()
+    .nonnegative("Minimum Rental Days is required"),
+  pickupAvailable: z.string().min(1, "Pickup Available is required"),
+  depositRequired: z.string().min(1, "Deposit Required is required"),
   location: z.string().min(2, "Location is required"),
   carBrand: z.string().min(1, "Brand is required"),
   carModel: z.string().min(1, "Model is required"),
@@ -605,6 +625,192 @@ const CreateCar = () => {
             </div>
             {errors.fuelType && (
               <p className="text-red-500 text-sm">{errors.fuelType.message}</p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Air Bags
+            <input
+              type="number"
+              className={styles.input}
+              placeholder="Air Bags"
+              {...register("airBags")}
+            />
+            {errors.airBags && (
+              <p className="text-red-500 text-sm">{errors.airBags.message}</p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Fuel Tank Capacity
+            <input
+              type="number"
+              className={styles.input}
+              placeholder="Fuel Tank Capacity"
+              {...register("tankCapacity")}
+            />
+            {errors.tankCapacity && (
+              <p className="text-red-500 text-sm">
+                {errors.tankCapacity.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Extra Mileage Rate
+            <input
+              type="number"
+              className={styles.input}
+              placeholder="Extra Mileage Rate"
+              {...register("extraMileageRate")}
+            />
+            {errors.extraMileageRate && (
+              <p className="text-red-500 text-sm">
+                {errors.extraMileageRate.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Delivery Charges
+            <input
+              type="number"
+              className={styles.input}
+              placeholder="Delivery Charges"
+              {...register("deliveryCharges")}
+            />
+            {errors.deliveryCharges && (
+              <p className="text-red-500 text-sm">
+                {errors.deliveryCharges.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Toll Charges
+            <input
+              type="number"
+              className={styles.input}
+              placeholder="Toll Charges"
+              {...register("tollCharges")}
+            />
+            {errors.tollCharges && (
+              <p className="text-red-500 text-sm">
+                {errors.tollCharges.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Security Deposit
+            <input
+              type="number"
+              className={styles.input}
+              placeholder="Security Deposit"
+              {...register("securityDeposit")}
+            />
+            {errors.securityDeposit && (
+              <p className="text-red-500 text-sm">
+                {errors.securityDeposit.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Daily Mileage
+            <input
+              type="number"
+              className={styles.input}
+              placeholder="Daily Mileage"
+              {...register("dailyMileage")}
+            />
+            {errors.dailyMileage && (
+              <p className="text-red-500 text-sm">
+                {errors.dailyMileage.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Weekly Mileage
+            <input
+              type="number"
+              className={styles.input}
+              placeholder="Weekly Mileage"
+              {...register("weeklyMileage")}
+            />
+            {errors.weeklyMileage && (
+              <p className="text-red-500 text-sm">
+                {errors.weeklyMileage.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Monthly Mileage
+            <input
+              type="number"
+              className={styles.input}
+              placeholder="Monthly Mileage"
+              {...register("monthlyMileage")}
+            />
+            {errors.monthlyMileage && (
+              <p className="text-red-500 text-sm">
+                {errors.monthlyMileage.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Minimum Rental Days
+            <input
+              type="number"
+              className={styles.input}
+              placeholder="Monthly Mileage"
+              {...register("minRentalDays")}
+            />
+            {errors.minRentalDays && (
+              <p className="text-red-500 text-sm">
+                {errors.minRentalDays.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Is Pickup Available
+            <div className={styles.selectWrapper}>
+              <select
+                {...register("pickupAvailable")}
+                className={styles.select}
+              >
+                <option value="">Pickup Available</option>
+                <option value={true}>Yes</option>
+                <option value={false}>No</option>
+              </select>
+            </div>
+            {errors.pickupAvailable && (
+              <p className="text-red-500 text-sm">
+                {errors.pickupAvailable.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Is Deposit Required
+            <div className={styles.selectWrapper}>
+              <select
+                {...register("depositRequired")}
+                className={styles.select}
+              >
+                <option value="">Deposit Required</option>
+                <option value={true}>Yes</option>
+                <option value={false}>No</option>
+              </select>
+            </div>
+            {errors.depositRequired && (
+              <p className="text-red-500 text-sm">
+                {errors.depositRequired.message}
+              </p>
             )}
           </label>
         </div>

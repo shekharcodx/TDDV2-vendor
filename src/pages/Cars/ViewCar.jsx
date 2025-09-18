@@ -98,7 +98,37 @@ const ViewCar = () => {
           <Text fontWeight="600">Rent per Month</Text>
           <Text>{car?.listing?.rentPerMonth} AED</Text>
         </GridItem>
+        <GridItem>
+          <Text fontWeight="600">Daily Mileage</Text>
+          <Text>{car?.listing?.car?.dailyMileage} KM</Text>
+        </GridItem>
+        <GridItem>
+          <Text fontWeight="600">Weekly Mileage</Text>
+          <Text>{car?.listing?.car?.weeklyMileage} KM</Text>
+        </GridItem>
+        <GridItem>
+          <Text fontWeight="600">Monthly Mileage</Text>
+          <Text>{car?.listing?.car?.monthlyMileage} KM</Text>
+        </GridItem>
+        <GridItem>
+          <Text fontWeight="600">Extra Mileage Rate</Text>
+          <Text>{car?.listing?.extraMileageRate} AED/KM</Text>
+        </GridItem>
+        <GridItem>
+          <Text fontWeight="600">Delivery Charges</Text>
+          <Text>{car?.listing?.deliveryCharges} AED</Text>
+        </GridItem>
+        <GridItem>
+          <Text fontWeight="600">Toll Charges</Text>
+          <Text>{car?.listing?.tollCharges} AED</Text>
+        </GridItem>
+        <GridItem>
+          <Text fontWeight="600">Security Deposit</Text>
+          <Text>{car?.listing?.securityDeposit} AED</Text>
+        </GridItem>
       </Grid>
+
+      <hr className="text-gray-200 mb-4" />
 
       <Grid templateColumns="repeat(2, 1fr)" gap={6} mb="20px">
         <GridItem>
@@ -119,7 +149,22 @@ const ViewCar = () => {
             {car?.listing?.car.warranty}
           </Badge>
         </GridItem>
+        <GridItem>
+          <Text fontWeight="600">Pickup Available</Text>
+          <Badge colorScheme={car?.listing?.pickupAvailable ? "green" : "red"}>
+            {car?.listing?.pickupAvailable ? "Yes" : "No"}
+          </Badge>
+        </GridItem>
+
+        <GridItem>
+          <Text fontWeight="600">Deposit Required</Text>
+          <Badge colorScheme={car?.listing?.depositRequired ? "green" : "red"}>
+            {car?.listing?.depositRequired ? "Yes" : "No"}
+          </Badge>
+        </GridItem>
       </Grid>
+
+      <hr className="text-gray-200 mb-4" />
 
       {/* Car Specs */}
       <Heading fontSize="20px" fontWeight="600" mb="15px">
@@ -177,7 +222,14 @@ const ViewCar = () => {
           label="Fuel Type"
           value={car?.listing?.car?.carBrand?.carModel?.details?.fuelType}
         />
+        <Spec label="Air Bags" value={car?.listing?.car?.airBags} />
+        <Spec
+          label="Fuel Tank Capacity"
+          value={`${car?.listing?.car?.tankCapacity} L`}
+        />
       </Grid>
+
+      <hr className="text-gray-200 my-4" />
 
       {/* Features */}
       <Heading fontSize="20px" fontWeight="600" mt="20px" mb="10px">
@@ -195,6 +247,8 @@ const ViewCar = () => {
             )
           : "No technical features"}
       </Box>
+
+      <hr className="text-gray-200 mb-4" />
 
       <Heading fontSize="20px" fontWeight="600" mt="20px" mb="10px">
         Other Features
