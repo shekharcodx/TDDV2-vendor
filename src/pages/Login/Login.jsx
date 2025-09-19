@@ -54,6 +54,7 @@ const Login = () => {
         }
         return {
           title: err?.message || err?.data?.message || "Failed to login.",
+          description: "",
         };
       },
       loading: { title: "Logging in", description: "Please wait" },
