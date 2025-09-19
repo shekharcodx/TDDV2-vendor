@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useLocation } from "react-router-dom";
+import Select from "react-select";
 import styles from "./CreateCar.module.css";
 import { toaster } from "@/components/ui/toaster";
 import {
@@ -24,26 +25,62 @@ import {
 import { Box, Heading, Text } from "@chakra-ui/react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 
 const editCarSchema = z.object({
   title: z.string().min(2, "Title is required"),
   description: z
     .string()
     .min(10, "Description should be at least 10 characters"),
-  rentPerDay: z.coerce
-    .number()
-    .positive("Rent per day must be a positive number"),
-  rentPerWeek: z.coerce
-    .number()
-    .positive("Rent per week must be a positive number"),
-  rentPerMonth: z.coerce
-    .number()
-    .positive("Rent per month must be a positive number"),
+  rentPerDay: z.coerce.number().min(1, "Rent per day must be at least 1"),
+  rentPerWeek: z.coerce.number().min(1, "Rent per week must be at least 1"),
+  rentPerMonth: z.coerce.number().min(1, "Rent per month must be at least 1"),
+  // rentPerDay: z.coerce
+  //   .number()
+  //   .positive("Rent per day must be a positive number"),
+  // rentPerWeek: z.coerce
+  //   .number()
+  //   .positive("Rent per week must be a positive number"),
+  // rentPerMonth: z.coerce
+  //   .number()
+  //   .positive("Rent per month must be a positive number"),
   carInsurance: z.enum(["yes", "no"], {
     required_error: "Car insurance is required",
   }),
   warranty: z.enum(["yes", "no"], { required_error: "Warranty is required" }),
-  mileage: z.coerce.number().nonnegative("Mileage must be 0 or more"),
+  mileage: z.coerce.number().min(1, "Mileage is required"),
+  airBags: z
+    .string()
+    .min(1, "Air Bags is required")
+    .transform(Number)
+    .refine((val) => val >= 0, {
+      message: "Air Bags cannot be negative",
+    }),
+  tankCapacity: z.coerce.number().min(1, "Tank capacity is required"),
+  extraMileageRate: z.coerce
+    .number()
+    .min(0, "Extra mileage rate cannot be negative"),
+  deliveryCharges: z
+    .string()
+    .min(1, "Delivery charges is required")
+    .transform(Number)
+    .refine((val) => val >= 0, {
+      message: "Delivery charges cannot be negative",
+    }),
+  tollCharges: z
+    .string()
+    .min(1, "Toll charges is required")
+    .transform(Number)
+    .refine((val) => val >= 0, {
+      message: "Toll charges cannot be negative",
+    }),
+  securityDeposit: z.string().min(1, "Security deposit is required"),
+  dailyMileage: z.coerce.number().min(1, "Daily mileage is required"),
+  weeklyMileage: z.coerce.number().min(1, "Weekly mileage is required"),
+  monthlyMileage: z.coerce.number().min(1, "Monthly mileage is required"),
+  minRentalDays: z.coerce.number().min(1, "Min rental days is required"),
+  pickupAvailable: z.string().min(1, "Pickup Available is required"),
+  depositRequired: z.string().min(1, "Deposit Required is required"),
   location: z.string().min(2, "Location is required"),
   carBrand: z.string().min(1, "Brand is required"),
   carModel: z.string().min(1, "Model is required"),
@@ -71,9 +108,45 @@ const editCarSchema = z.object({
     .transform((files) => (files ? Array.from(files) : [])),
 });
 
+const selectCustomStyles = {
+  control: (provided, state) => ({
+    ...provided,
+    padding: "7.5px 16px",
+    fontSize: "15px",
+    borderRadius: "10px",
+    border: "1px solid var(--light-gray-four-color)",
+    backgroundColor: "#fff",
+    boxSizing: "border-box",
+    boxShadow: state.isFocused
+      ? "0 2px 8px rgba(0, 0, 0, 0.15)"
+      : "0 2px 8px rgba(0, 0, 0, 0.05)",
+    transition: "all 0.3s ease",
+    width: "100%",
+    "&:hover": {
+      borderColor: "var(--light-gray-four-color)",
+    },
+  }),
+  placeholder: (provided) => ({
+    ...provided,
+    color: "#999",
+  }),
+  singleValue: (provided) => ({
+    ...provided,
+    color: "#333",
+  }),
+  menu: (provided) => ({
+    ...provided,
+    borderRadius: "10px",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+  }),
+};
+
 const EditCar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const carData = location.state?.car;
+
+  console.log("EditCar:carData", carData);
 
   // 🔹 Queries
   const { data: brands } = useGetCarBrandsQuery();
@@ -99,6 +172,7 @@ const EditCar = () => {
     handleSubmit,
     watch,
     reset,
+    control,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(editCarSchema),
@@ -200,6 +274,18 @@ const EditCar = () => {
         warranty: carData.car.warranty?.toLowerCase() || "",
         mileage: carData.car.mileage || "",
         location: carData.location || "",
+        airBags: carData?.car?.airBags.toString() || "",
+        tankCapacity: carData?.car?.tankCapacity.toString() || "",
+        dailyMileage: carData?.car?.dailyMileage.toString() || "",
+        weeklyMileage: carData?.car?.weeklyMileage.toString() || "",
+        monthlyMileage: carData?.car?.monthlyMileage.toString() || "",
+        extraMileageRate: carData?.extraMileageRate.toString() || "",
+        deliveryCharges: carData?.deliveryCharges.toString() || "",
+        tollCharges: carData?.tollCharges.toString() || "",
+        securityDeposit: carData?.securityDeposit.toString() || "",
+        minRentalDays: carData?.minRentalDays.toString() || "",
+        pickupAvailable: carData?.pickupAvailable.toString() || "",
+        depositRequired: carData?.depositRequired.toString() || "",
         techFeatures: techFeatureIds,
         otherFeatures: otherFeatureIds,
       });
@@ -254,6 +340,7 @@ const EditCar = () => {
 
   // 🔹 Submit
   const onSubmit = (data) => {
+    console.log("EditCar:data", data);
     const formData = new FormData();
     formData.append("id", carData._id);
 
@@ -271,9 +358,13 @@ const EditCar = () => {
       updateCarListing({ listingId: carData._id, data: formData }).unwrap(),
       {
         loading: { title: "Updating Car...", description: "Please wait..." },
-        success: (res) => ({
-          title: res?.message || "Car updated successfully!",
-        }),
+        success: (res) => {
+          navigate(`/cars/view/${carData._id}`);
+          return {
+            title: res?.message || "Car updated successfully!",
+            description: "",
+          };
+        },
         error: (err) => ({
           title: err?.data?.message || "Failed to update car.",
         }),
@@ -407,15 +498,34 @@ const EditCar = () => {
         <div className={styles.grid}>
           <label className={styles.labelWrapper}>
             Brand
-            <div className={styles.selectWrapper}>
-              <select {...register("carBrand")} className={styles.select}>
-                <option value="">Select Brand</option>
-                {(brands?.carBrands || []).map((brand) => (
-                  <option key={brand._id} value={brand._id}>
-                    {brand.name}
-                  </option>
-                ))}
-              </select>
+            <div>
+              <Controller
+                name="carBrand"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    value={
+                      [
+                        { value: "", label: "Select Brand" },
+                        ...(brands?.carBrands?.map((brand) => ({
+                          value: brand._id,
+                          label: brand.name,
+                        })) ?? []),
+                      ].find((opt) => opt.value === field.value) || null
+                    }
+                    onChange={(option) => field.onChange(option?.value ?? "")}
+                    styles={selectCustomStyles}
+                    options={[
+                      { value: "", label: "Select Brand" },
+                      ...(brands?.carBrands?.map((brand) => ({
+                        value: brand._id,
+                        label: brand.name,
+                      })) ?? []),
+                    ]}
+                  />
+                )}
+              />
               {errors?.carBrand && (
                 <p className="text-red-500 text-sm">
                   {errors.carBrand?.message}
@@ -425,19 +535,35 @@ const EditCar = () => {
           </label>
           <label className={styles.labelWrapper}>
             Model
-            <div className={styles.selectWrapper}>
-              <select
-                {...register("carModel")}
-                className={styles.select}
-                disabled={!selectedBrand}
-              >
-                <option value="">Select Model</option>
-                {(models?.carModels || []).map((model) => (
-                  <option key={model._id} value={model._id}>
-                    {model.name}
-                  </option>
-                ))}
-              </select>
+            <div>
+              <Controller
+                name="carModel"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    isDisabled={!selectedBrand}
+                    value={
+                      [
+                        { value: "", label: "Select Model" },
+                        ...(models?.carModels?.map((model) => ({
+                          value: model._id,
+                          label: model.name,
+                        })) ?? []),
+                      ].find((opt) => opt.value === field.value) || null
+                    }
+                    onChange={(option) => field.onChange(option?.value ?? "")}
+                    styles={selectCustomStyles}
+                    options={[
+                      { value: "", label: "Select Model" },
+                      ...(models?.carModels?.map((model) => ({
+                        value: model._id,
+                        label: model.name,
+                      })) ?? []),
+                    ]}
+                  />
+                )}
+              />
               {errors?.carModel && (
                 <p className="text-red-500 text-sm">
                   {errors.carModel?.message}
@@ -447,19 +573,35 @@ const EditCar = () => {
           </label>
           <label className={styles.labelWrapper}>
             Trim
-            <div className={styles.selectWrapper}>
-              <select
-                {...register("carTrim")}
-                className={styles.select}
-                disabled={!selectedModel}
-              >
-                <option value="">Select Trim</option>
-                {(trims?.carTrims || []).map((trim) => (
-                  <option key={trim._id} value={trim._id}>
-                    {trim.name}
-                  </option>
-                ))}
-              </select>
+            <div>
+              <Controller
+                name="carTrim"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    isDisabled={!selectedModel}
+                    value={
+                      [
+                        { value: "", label: "Select Trim" },
+                        ...(trims?.carTrims?.map((trim) => ({
+                          value: trim._id,
+                          label: trim.name,
+                        })) ?? []),
+                      ].find((opt) => opt.value === field.value) || null
+                    }
+                    onChange={(option) => field.onChange(option?.value ?? "")}
+                    styles={selectCustomStyles}
+                    options={[
+                      { value: "", label: "Select Trim" },
+                      ...(trims?.carTrims?.map((trim) => ({
+                        value: trim._id,
+                        label: trim.name,
+                      })) ?? []),
+                    ]}
+                  />
+                )}
+              />
               {errors?.carTrim && (
                 <p className="text-red-500 text-sm">
                   {errors.carTrim?.message}
@@ -689,6 +831,191 @@ const EditCar = () => {
               )}
             </div>
           </label>
+          <label className={styles.labelWrapper}>
+            Air Bags
+            <input
+              type="number"
+              className={styles.input}
+              placeholder="Air Bags"
+              {...register("airBags")}
+            />
+            {errors.airBags && (
+              <p className="text-red-500 text-sm">{errors.airBags.message}</p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Fuel Tank Capacity
+            <input
+              type="number"
+              className={styles.input}
+              placeholder="Fuel Tank Capacity"
+              {...register("tankCapacity")}
+            />
+            {errors.tankCapacity && (
+              <p className="text-red-500 text-sm">
+                {errors.tankCapacity.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Extra Mileage Rate
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="Extra Mileage Rate"
+              {...register("extraMileageRate", { valueAsNumber: true })}
+            />
+            {errors.extraMileageRate && (
+              <p className="text-red-500 text-sm">
+                {errors.extraMileageRate.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Delivery Charges
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="Delivery Charges"
+              {...register("deliveryCharges")}
+            />
+            {errors.deliveryCharges && (
+              <p className="text-red-500 text-sm">
+                {errors.deliveryCharges.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Toll Charges
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="Toll Charges"
+              {...register("tollCharges")}
+            />
+            {errors.tollCharges && (
+              <p className="text-red-500 text-sm">
+                {errors.tollCharges.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Security Deposit
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="Security Deposit"
+              {...register("securityDeposit")}
+            />
+            {errors.securityDeposit && (
+              <p className="text-red-500 text-sm">
+                {errors.securityDeposit.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Daily Mileage
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="Daily Mileage"
+              {...register("dailyMileage")}
+            />
+            {errors.dailyMileage && (
+              <p className="text-red-500 text-sm">
+                {errors.dailyMileage.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Weekly Mileage
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="Weekly Mileage"
+              {...register("weeklyMileage")}
+            />
+            {errors.weeklyMileage && (
+              <p className="text-red-500 text-sm">
+                {errors.weeklyMileage.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Monthly Mileage
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="Monthly Mileage"
+              {...register("monthlyMileage")}
+            />
+            {errors.monthlyMileage && (
+              <p className="text-red-500 text-sm">
+                {errors.monthlyMileage.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Minimum Rental Days
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="Monthly Mileage"
+              {...register("minRentalDays")}
+            />
+            {errors.minRentalDays && (
+              <p className="text-red-500 text-sm">
+                {errors.minRentalDays.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Is Pickup Available
+            <div className={styles.selectWrapper}>
+              <select
+                {...register("pickupAvailable")}
+                className={styles.select}
+              >
+                <option value="">Pickup Available</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+            </div>
+            {errors.pickupAvailable && (
+              <p className="text-red-500 text-sm">
+                {errors.pickupAvailable.message}
+              </p>
+            )}
+          </label>
+
+          <label className={styles.labelWrapper}>
+            Is Deposit Required
+            <div className={styles.selectWrapper}>
+              <select
+                {...register("depositRequired")}
+                className={styles.select}
+              >
+                <option value="">Deposit Required</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+            </div>
+            {errors.depositRequired && (
+              <p className="text-red-500 text-sm">
+                {errors.depositRequired.message}
+              </p>
+            )}
+          </label>
         </div>
 
         {/* Tech & Other Features */}
@@ -783,9 +1110,20 @@ const EditCar = () => {
               </button>
             </div>
           )} */}
-          {selectedImages.length > 0 && (
+          {selectedImages.length > 0 ? (
             <div className={styles.imagePreviewGrid}>
               {selectedImages.map((img, idx) => (
+                <img
+                  key={idx}
+                  src={img.url}
+                  alt={img.name}
+                  className={styles.imagePreview}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className={styles.imagePreviewGrid}>
+              {carData?.car?.images.map((img, idx) => (
                 <img
                   key={idx}
                   src={img.url}

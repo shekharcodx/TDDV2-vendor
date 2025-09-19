@@ -4,13 +4,13 @@ import { toaster } from "@/components/ui/toaster";
 import { useEffect } from "react";
 
 function ProtectedRoute({ redirect }) {
-  const user = getUser();
+  // const user = getUser();
   const token = getToken();
   const location = useLocation();
 
   const devBypas = false;
 
-  const isAuthenticated = user && token;
+  const isAuthenticated = token;
 
   // Extract user role from Cookies
   const userRole = getUserRole();
@@ -18,16 +18,19 @@ function ProtectedRoute({ redirect }) {
   // Role check logic
   const hasRequiredRole = userRole == 2;
 
+  console.log("index:", { hasRequiredRole, userRole });
+
   useEffect(() => {
-    if (!isAuthenticated && !devBypas) {
-      toaster.create({
-        type: "error",
-        title: "Authentication required",
-        description: "You need to log in to access this page.",
-        closable: true,
-        duration: 5000,
-      });
-    } else if (!hasRequiredRole && !devBypas) {
+    // if (!isAuthenticated && !devBypas) {
+    //   toaster.create({
+    //     type: "error",
+    //     title: "Authentication required",
+    //     description: "You need to log in to access this page.",
+    //     closable: true,
+    //     duration: 5000,
+    //   });
+    // } else
+    if (userRole && !hasRequiredRole && !devBypas) {
       toaster.create({
         type: "error",
         title: "Access Denied",

@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState } from "react";
 import styles from "./login.module.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -39,11 +37,14 @@ const Login = () => {
   const onSubmit = async (formData) => {
     toaster.promise(login(formData).unwrap(), {
       success: (res) => {
-        if (res.code === 9011) {
+        if (res.code === 9011 && res?.data?.role === 2) {
           setToken(res.data?.token);
           setUserRole(res.data?.role);
           setUser(res.data);
           navigate("/");
+        }
+        if (res?.data?.role !== 2) {
+          throw new Error("You are not authorized to access this panel");
         }
         return { title: res.message || "Successfully logged in!" };
       },
@@ -51,7 +52,9 @@ const Login = () => {
         if (err?.data?.code === 9010) {
           navigate("/change-password");
         }
-        return { title: err?.data?.message || "Failed to login." };
+        return {
+          title: err?.message || err?.data?.message || "Failed to login.",
+        };
       },
       loading: { title: "Logging in", description: "Please wait" },
     });

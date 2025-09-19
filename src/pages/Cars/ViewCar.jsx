@@ -44,7 +44,7 @@ const ViewCar = () => {
             src={selectedImage}
             alt={car?.listing?.title}
             borderRadius="12px"
-            objectFit="cover"
+            objectFit="contain"
             w="100%"
             h="400px"
             mb="12px"
@@ -66,7 +66,7 @@ const ViewCar = () => {
                 cursor="pointer"
                 borderRadius="8px"
                 boxSize="80px"
-                objectFit="cover"
+                objectFit="contain"
                 border={
                   selectedImage === img.url
                     ? "2px solid"
@@ -99,20 +99,8 @@ const ViewCar = () => {
           <Text>{car?.listing?.rentPerMonth} AED</Text>
         </GridItem>
         <GridItem>
-          <Text fontWeight="600">Daily Mileage</Text>
-          <Text>{car?.listing?.car?.dailyMileage} KM</Text>
-        </GridItem>
-        <GridItem>
-          <Text fontWeight="600">Weekly Mileage</Text>
-          <Text>{car?.listing?.car?.weeklyMileage} KM</Text>
-        </GridItem>
-        <GridItem>
-          <Text fontWeight="600">Monthly Mileage</Text>
-          <Text>{car?.listing?.car?.monthlyMileage} KM</Text>
-        </GridItem>
-        <GridItem>
           <Text fontWeight="600">Extra Mileage Rate</Text>
-          <Text>{car?.listing?.extraMileageRate} AED/KM</Text>
+          <Text>{car?.listing?.extraMileageRate} AED/km</Text>
         </GridItem>
         <GridItem>
           <Text fontWeight="600">Delivery Charges</Text>
@@ -134,7 +122,7 @@ const ViewCar = () => {
         <GridItem>
           <Text fontWeight="600">Car Insurance</Text>
           <Badge
-            colorScheme={
+            colorPalette={
               car?.listing?.car?.carInsurance === "yes" ? "green" : "red"
             }
           >
@@ -144,21 +132,23 @@ const ViewCar = () => {
         <GridItem>
           <Text fontWeight="600">Warranty</Text>
           <Badge
-            colorScheme={car?.listing?.car.warranty === "yes" ? "green" : "red"}
+            colorPalette={
+              car?.listing?.car.warranty === "yes" ? "green" : "red"
+            }
           >
             {car?.listing?.car.warranty}
           </Badge>
         </GridItem>
         <GridItem>
           <Text fontWeight="600">Pickup Available</Text>
-          <Badge colorScheme={car?.listing?.pickupAvailable ? "green" : "red"}>
+          <Badge colorPalette={car?.listing?.pickupAvailable ? "green" : "red"}>
             {car?.listing?.pickupAvailable ? "Yes" : "No"}
           </Badge>
         </GridItem>
 
         <GridItem>
           <Text fontWeight="600">Deposit Required</Text>
-          <Badge colorScheme={car?.listing?.depositRequired ? "green" : "red"}>
+          <Badge colorPalette={car?.listing?.depositRequired ? "green" : "red"}>
             {car?.listing?.depositRequired ? "Yes" : "No"}
           </Badge>
         </GridItem>
@@ -172,6 +162,18 @@ const ViewCar = () => {
       </Heading>
       <Grid templateColumns="repeat(2, 1fr)" gap={6}>
         <Spec label="Mileage" value={`${car?.listing?.car.mileage} km`} />
+        <Spec
+          label="Daily Mileage"
+          value={`${car?.listing?.car?.dailyMileage} km`}
+        />
+        <Spec
+          label="Weekly Mileage"
+          value={`${car?.listing?.car?.weeklyMileage} km`}
+        />
+        <Spec
+          label="Monthly Mileage"
+          value={`${car?.listing?.car?.monthlyMileage} km`}
+        />
         <Spec label="Location" value={car?.listing?.location} />
         <Spec label="Brand" value={car?.listing?.car.carBrand?.name} />
         <Spec

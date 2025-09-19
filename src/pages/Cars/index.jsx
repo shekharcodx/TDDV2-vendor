@@ -30,7 +30,7 @@ const AllCars = () => {
           alt={
             listing?.car?.carBrand?.name + " " + listing?.car?.carModel?.name
           }
-          className={`${styles.avatar} mx-auto`}
+          className={`${styles.avatar} mx-auto !object-contain`}
         />
       ),
     },
@@ -65,8 +65,8 @@ const AllCars = () => {
             listing.isFeatured
               ? styles.statusGreen
               : !listing.isFeatured
-              ? styles.statusYellow
-              : styles.statusOrange
+                ? styles.statusYellow
+                : styles.statusOrange
           }`}
         >
           {listing.isFeatured ? "True" : "False"}
@@ -82,8 +82,8 @@ const AllCars = () => {
             listing.isPremium
               ? styles.statusGreen
               : !listing.isPremium
-              ? styles.statusYellow
-              : styles.statusOrange
+                ? styles.statusYellow
+                : styles.statusOrange
           }`}
         >
           {listing.isPremium ? "True" : "False"}
@@ -99,8 +99,8 @@ const AllCars = () => {
             listing.status === 2
               ? styles.statusGreen
               : listing.status === 1
-              ? styles.statusYellow
-              : styles.statusOrange
+                ? styles.statusYellow
+                : styles.statusOrange
           }`}
         >
           {LISTING_STATUS_NUM[listing.status]}

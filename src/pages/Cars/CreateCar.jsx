@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import styles from "./CreateCar.module.css";
 import { toaster } from "@/components/ui/toaster";
-
+import Select from "react-select";
 import {
   useGetCarBrandsQuery,
   useLazyGetModelsQuery,
@@ -31,38 +31,54 @@ const addCarSchema = z.object({
   description: z
     .string()
     .min(10, "Description should be at least 10 characters"),
-  rentPerDay: z.coerce
-    .number()
-    .positive("Rent per day must be a positive number"),
-  rentPerWeek: z.coerce
-    .number()
-    .positive("Rent per week must be a positive number"),
-  rentPerMonth: z.coerce
-    .number()
-    .positive("Rent per month must be a positive number"),
+  rentPerDay: z.coerce.number().min(1, "Rent per day must be at least 1"),
+  rentPerWeek: z.coerce.number().min(1, "Rent per week must be at least 1"),
+  rentPerMonth: z.coerce.number().min(1, "Rent per month must be at least 1"),
   carInsurance: z.enum(["yes", "no"], {
     required_error: "Car insurance is required",
   }),
   warranty: z.enum(["yes", "no"], { required_error: "Warranty is required" }),
-  mileage: z.coerce.number().nonnegative("Mileage must be 0 or more"),
-  airBags: z.coerce.number().nonnegative("Air Bags is required"),
-  tankCapacity: z.coerce.number().nonnegative("Tank Capacity is required"),
-  extraMileageRate: z.coerce
-    .number()
-    .nonnegative("Extra Mileage Rate is required"),
-  deliveryCharges: z.coerce
-    .number()
-    .nonnegative("Delivery Charges is required"),
-  tollCharges: z.coerce.number().nonnegative("Toll Charges is required"),
-  securityDeposit: z.coerce
-    .number()
-    .nonnegative("Security Deposit is required"),
-  dailyMileage: z.coerce.number().nonnegative("Daily Mileage is required"),
-  weeklyMileage: z.coerce.number().nonnegative("Weekly Mileage is required"),
-  monthlyMileage: z.coerce.number().nonnegative("Monthly Mileage is required"),
-  minRentalDays: z.coerce
-    .number()
-    .nonnegative("Minimum Rental Days is required"),
+  mileage: z.coerce.number().min(1, "Mileage is required"),
+  airBags: z
+    .string()
+    .min(1, "Air Bags is required")
+    .transform(Number)
+    .refine((val) => val >= 0, {
+      message: "Air Bags cannot be negative",
+    }),
+  tankCapacity: z.coerce.number().min(1, "Tank capacity is required"),
+  extraMileageRate: z
+    .string()
+    .min(1, "Extra Mileage Rate is required")
+    .transform(Number)
+    .refine((val) => val >= 0, {
+      message: "Extra Mileage Rate cannot be negative",
+    }),
+  deliveryCharges: z
+    .string()
+    .min(1, "Delivery charges is required")
+    .transform(Number)
+    .refine((val) => val >= 0, {
+      message: "Delivery charges cannot be negative",
+    }),
+  tollCharges: z
+    .string()
+    .min(1, "Toll charges is required")
+    .transform(Number)
+    .refine((val) => val >= 0, {
+      message: "Toll charges cannot be negative",
+    }),
+  securityDeposit: z
+    .string()
+    .min(1, "Security deposit is required")
+    .transform(Number)
+    .refine((val) => val >= 0, {
+      message: "Security deposit cannot be negative",
+    }),
+  dailyMileage: z.coerce.number().min(1, "Daily mileage is required"),
+  weeklyMileage: z.coerce.number().min(1, "Weekly mileage is required"),
+  monthlyMileage: z.coerce.number().min(1, "Monthly mileage is required"),
+  minRentalDays: z.coerce.number().min(1, "Min rental days is required"),
   pickupAvailable: z.string().min(1, "Pickup Available is required"),
   depositRequired: z.string().min(1, "Deposit Required is required"),
   location: z.string().min(2, "Location is required"),
@@ -91,6 +107,39 @@ const addCarSchema = z.object({
     .transform((files) => Array.from(files)),
 });
 
+const selectCustomStyles = {
+  control: (provided, state) => ({
+    ...provided,
+    padding: "7.5px 16px",
+    fontSize: "15px",
+    borderRadius: "10px",
+    border: "1px solid var(--light-gray-four-color)",
+    backgroundColor: "#fff",
+    boxSizing: "border-box",
+    boxShadow: state.isFocused
+      ? "0 2px 8px rgba(0, 0, 0, 0.15)"
+      : "0 2px 8px rgba(0, 0, 0, 0.05)",
+    transition: "all 0.3s ease",
+    width: "100%",
+    "&:hover": {
+      borderColor: "var(--light-gray-four-color)",
+    },
+  }),
+  placeholder: (provided) => ({
+    ...provided,
+    color: "#999",
+  }),
+  singleValue: (provided) => ({
+    ...provided,
+    color: "#333",
+  }),
+  menu: (provided) => ({
+    ...provided,
+    borderRadius: "10px",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+  }),
+};
+
 const CreateCar = () => {
   const navigate = useNavigate();
   // 🔹 Queries
@@ -118,6 +167,7 @@ const CreateCar = () => {
     handleSubmit,
     watch,
     setValue,
+    control,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(addCarSchema),
@@ -342,15 +392,34 @@ const CreateCar = () => {
         <div className={styles.grid}>
           <label className={styles.labelWrapper}>
             Brand
-            <div className={styles.selectWrapper}>
-              <select {...register("carBrand")} className={styles.select}>
-                <option value="">Select Brand</option>
-                {(brands?.carBrands || []).map((brand) => (
-                  <option key={brand._id} value={brand._id}>
-                    {brand.name}
-                  </option>
-                ))}
-              </select>
+            <div>
+              <Controller
+                name="carBrand"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    value={
+                      [
+                        { value: "", label: "Select Brand" },
+                        ...(brands?.carBrands?.map((brand) => ({
+                          value: brand._id,
+                          label: brand.name,
+                        })) ?? []),
+                      ].find((opt) => opt.value === field.value) || null
+                    }
+                    onChange={(option) => field.onChange(option?.value ?? "")}
+                    styles={selectCustomStyles}
+                    options={[
+                      { value: "", label: "Select Brand" },
+                      ...(brands?.carBrands?.map((brand) => ({
+                        value: brand._id,
+                        label: brand.name,
+                      })) ?? []),
+                    ]}
+                  />
+                )}
+              />
               {errors.carBrand && (
                 <p className="text-red-500 text-sm">
                   {errors.carBrand.message}
@@ -361,19 +430,35 @@ const CreateCar = () => {
 
           <label className={styles.labelWrapper}>
             Model
-            <div className={styles.selectWrapper}>
-              <select
-                {...register("carModel")}
-                className={styles.select}
-                disabled={!selectedBrand}
-              >
-                <option value="">Select Model</option>
-                {(models?.carModels || []).map((model) => (
-                  <option key={model._id} value={model._id}>
-                    {model.name}
-                  </option>
-                ))}
-              </select>
+            <div>
+              <Controller
+                name="carModel"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    isDisabled={!selectedBrand}
+                    value={
+                      [
+                        { value: "", label: "Select Model" },
+                        ...(models?.carModels?.map((model) => ({
+                          value: model._id,
+                          label: model.name,
+                        })) ?? []),
+                      ].find((opt) => opt.value === field.value) || null
+                    }
+                    onChange={(option) => field.onChange(option?.value ?? "")}
+                    styles={selectCustomStyles}
+                    options={[
+                      { value: "", label: "Select Model" },
+                      ...(models?.carModels?.map((model) => ({
+                        value: model._id,
+                        label: model.name,
+                      })) ?? []),
+                    ]}
+                  />
+                )}
+              />
               {errors.carModel && (
                 <p className="text-red-500 text-sm">
                   {errors.carModel.message}
@@ -384,19 +469,35 @@ const CreateCar = () => {
 
           <label className={styles.labelWrapper}>
             Trim
-            <div className={styles.selectWrapper}>
-              <select
-                {...register("carTrim")}
-                className={styles.select}
-                disabled={!selectedModel}
-              >
-                <option value="">Select Trim</option>
-                {(trims?.carTrims || []).map((trim) => (
-                  <option key={trim._id} value={trim._id}>
-                    {trim.name}
-                  </option>
-                ))}
-              </select>
+            <div>
+              <Controller
+                name="carTrim"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    isDisabled={!selectedModel}
+                    value={
+                      [
+                        { value: "", label: "Select Trim" },
+                        ...(trims?.carTrims?.map((trim) => ({
+                          value: trim._id,
+                          label: trim.name,
+                        })) ?? []),
+                      ].find((opt) => opt.value === field.value) || null
+                    }
+                    onChange={(option) => field.onChange(option?.value ?? "")}
+                    styles={selectCustomStyles}
+                    options={[
+                      { value: "", label: "Select Trim" },
+                      ...(trims?.carTrims?.map((trim) => ({
+                        value: trim._id,
+                        label: trim.name,
+                      })) ?? []),
+                    ]}
+                  />
+                )}
+              />
               {errors.carTrim && (
                 <p className="text-red-500 text-sm">{errors.carTrim.message}</p>
               )}

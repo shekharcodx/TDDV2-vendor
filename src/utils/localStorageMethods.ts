@@ -22,40 +22,40 @@ const removeItem = (key: string): void => {
 };
 
 const setToken = (token: string): void => {
-  Cookies.set("token", token, { expires: 1 });
+  Cookies.set("vendor-token", token, { expires: 1 });
 };
 
 const getToken = (): string | null => {
-  return Cookies.get("token") || null;
+  return Cookies.get("vendor-token") || null;
 };
 
 const removeToken = () => {
-  Cookies.remove("token");
+  Cookies.remove("vendor-token");
 };
 
 const setUser = (user: string): void => {
-  Cookies.set("user", user, { expires: 1 });
+  Cookies.set("user-vendor", user, { expires: 1 });
 };
 
 const getUser = (): string | null => {
-  return Cookies.get("user") || null;
+  return Cookies.get("user-vendor") || null;
 };
 
 const removeUser = () => {
-  Cookies.remove("user");
+  Cookies.remove("user-vendor");
 };
 
 const setUserRole = (role: number): void => {
-  Cookies.set("role", role.toString(), { expires: 1 });
+  Cookies.set("vendor-role", role.toString(), { expires: 1 });
 };
 
 const getUserRole = (): number | null => {
-  const role = Cookies.get("role");
+  const role = Cookies.get("vendor-role");
   return role ? parseInt(role, 10) : null;
 };
 
 const removeUserRole = () => {
-  Cookies.remove("k_role");
+  Cookies.remove("vendor-role");
 };
 
 export {
