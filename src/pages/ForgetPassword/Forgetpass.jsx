@@ -34,7 +34,7 @@ const ForgetPassword = () => {
         error: (err) => {
           console.error("Forget Password Error:", err);
           return {
-            title: err?.message || "Failed to send reset link",
+            title: err?.data?.message || "Failed to send reset link",
             description: "",
           };
         },
