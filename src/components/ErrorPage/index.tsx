@@ -1,44 +1,35 @@
-import errorIllustration from "@/assets/images/error-illustration.svg";
-import { Button } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Home, Compass } from "lucide-react";
+import styles from "./NotFound.module.css";
 
-function Main() {
-  const navigate = useNavigate();
+const NotFoundPage = () => {
   return (
-    <>
-      <div className="py-2 bg-gradient-to-b bg-primary to-theme-2 dark:from-darkmode-800 dark:to-darkmode-800">
-        {/* <ThemeSwitcher /> */}
-        <div className="container">
-          {/* BEGIN: Error Page */}
-          <div className="flex flex-col items-center justify-center h-screen text-center error-page lg:flex-row lg:text-left">
-            <div className="-intro-x lg:mr-20">
-              <img
-                alt="Midone Tailwind HTML Admin Template"
-                className="w-[450px] h-48 lg:h-auto"
-                src={errorIllustration}
-              />
-            </div>
-            <div className="mt-10 text-white lg:mt-0">
-              <div className="font-medium intro-x text-8xl text-black">404</div>
-              <div className="mt-5 text-xl text-black font-medium intro-x lg:text-3xl">
-                Oops. This page has gone missing.
-              </div>
-              <div className="mt-3 text-lg intro-x text-black mb-10">
-                You may have mistyped the address or the page may have moved.
-              </div>
-              <Button
-                onClick={() => navigate("/")}
-                className="px-4 py-3 mt-10 text-white border-white intro-x dark:border-darkmode-400 dark:text-slate-200"
-              >
-                Back to Home
-              </Button>
-            </div>
-          </div>
-          {/* END: Error Page */}
+    <div className={styles.wrapper}>
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className={styles.card}
+      >
+        <div className={styles.header}>
+          <Compass className={styles.icon} />
+          <h1 className={styles.title}>Page Not Found</h1>
         </div>
-      </div>
-    </>
-  );
-}
 
-export default Main;
+        <p className={styles.message}>
+          The page you are looking for doesn’t exist or has been moved.
+        </p>
+
+        <div className={styles.actions}>
+          <a href="/" className={styles.primaryBtn}>
+            <Home className={styles.smallIcon} /> Back to Home
+          </a>
+        </div>
+
+        <p className={styles.code}>404 • NOT FOUND</p>
+      </motion.div>
+    </div>
+  );
+};
+
+export default NotFoundPage;
