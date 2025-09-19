@@ -12,9 +12,11 @@ import {
   removeUserRole,
   removeUser,
 } from "@/utils/localStorageMethods";
+import UpdatePassword from "../profile/UpdatePassword";
 
 const Header = ({ isOpen, setIsOpen }) => {
   const [open, setOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const dropdownRef = useRef(null);
@@ -46,21 +48,22 @@ const Header = ({ isOpen, setIsOpen }) => {
   }, []);
 
   return (
-    <div className={styles.topHeader} style={{ zIndex: 999 }}>
-      <div className={`${styles.leftSection} block md:hidden`}>
-        <img src={logo} alt="logo" className={styles.logo} />
-      </div>
+    <>
+      <div className={styles.topHeader} style={{ zIndex: 999 }}>
+        <div className={`${styles.leftSection} block md:hidden`}>
+          <img src={logo} alt="logo" className={styles.logo} />
+        </div>
 
-      <Button
-        display={{ base: "block", md: "none" }}
-        variant="ghost"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <FaBars color="rgba(91, 120, 124, 1)" />
-      </Button>
+        <Button
+          display={{ base: "block", md: "none" }}
+          variant="ghost"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <FaBars color="rgba(91, 120, 124, 1)" />
+        </Button>
 
-      <div className={styles.rightSection} ref={dropdownRef}>
-        {/* <div className={styles.avatarWrapper} onClick={() => setOpen(!open)}>
+        <div className={styles.rightSection} ref={dropdownRef}>
+          {/* <div className={styles.avatarWrapper} onClick={() => setOpen(!open)}>
           <img
             src="https://cdn-icons-png.flaticon.com/512/219/219986.png"
             alt="User Avatar"
@@ -76,29 +79,48 @@ const Header = ({ isOpen, setIsOpen }) => {
             </ul>
           </div>
         )} */}
-        <Menu.Root positioning={{ placement: "bottom" }}>
-          <Menu.Trigger rounded="full">
-            <Avatar.Root size="sm">
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/219/219986.png"
-                alt="User Avatar"
-                className={styles.avatar}
-              />
-            </Avatar.Root>
-          </Menu.Trigger>
-          <Portal>
-            <Menu.Positioner>
-              <Menu.Content>
-                <Menu.Item onClick={() => navigate("/profile")}>
-                  👤 Profile
-                </Menu.Item>
-                <Menu.Item onClick={handleSignOut}>🚪 Sign Out</Menu.Item>
-              </Menu.Content>
-            </Menu.Positioner>
-          </Portal>
-        </Menu.Root>
+          <Menu.Root positioning={{ placement: "bottom" }}>
+            <Menu.Trigger rounded="full">
+              <Avatar.Root size="sm">
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/219/219986.png"
+                  alt="User Avatar"
+                  className={styles.avatar}
+                />
+              </Avatar.Root>
+            </Menu.Trigger>
+            <Portal>
+              <Menu.Positioner>
+                <Menu.Content>
+                  <Menu.Item
+                    value="profile"
+                    cursor="pointer"
+                    onClick={() => navigate("/profile")}
+                  >
+                    👤 Profile
+                  </Menu.Item>
+                  <Menu.Item
+                    value="change-password"
+                    cursor="pointer"
+                    onClick={() => setIsDialogOpen(true)}
+                  >
+                    🔒 Change Password
+                  </Menu.Item>
+                  <Menu.Item
+                    value="sign-out"
+                    cursor="pointer"
+                    onClick={handleSignOut}
+                  >
+                    🚪 Sign Out
+                  </Menu.Item>
+                </Menu.Content>
+              </Menu.Positioner>
+            </Portal>
+          </Menu.Root>
+        </div>
       </div>
-    </div>
+      <UpdatePassword isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} />
+    </>
   );
 };
 

@@ -29,6 +29,13 @@ const profileApi = baseApi.injectEndpoints({
         serializeQueryArgs: () => ({}),
       }),
     }),
+    updatePassword: builder.mutation({
+      query: (data) => ({
+        url: "/updatePassword",
+        method: "PATCH",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -36,4 +43,5 @@ export const {
   useGetProfileQuery,
   useUpdateProfileMutation,
   useLazyGetDocumentQuery,
+  useUpdatePasswordMutation,
 } = profileApi;
