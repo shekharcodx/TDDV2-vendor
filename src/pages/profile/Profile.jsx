@@ -43,6 +43,7 @@ const Profile = () => {
     refetchOnMountOrArgChange: true,
     skip: false,
   });
+  console.log("Profile:", profileData);
   const [updateProfile] = useUpdateProfileMutation();
   const imageRef = useRef(null);
 

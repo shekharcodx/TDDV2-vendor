@@ -1,4 +1,4 @@
-import { getToken } from "@/utils/localStorageMethods";
+import { getToken, setToken } from "@/utils/localStorageMethods";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { toaster } from "@/components/ui/toaster";
 
@@ -11,10 +11,11 @@ const baseQuery = fetchBaseQuery({
     }
     return headers;
   },
+  credentials: "include",
 });
 
 const baseQueryWithErrorHandling = async (args, api, extraOptions) => {
-  const result = await baseQuery(args, api, extraOptions);
+  let result = await baseQuery(args, api, extraOptions);
 
   if (result.error) {
     console.error("API Error:", result.error);
@@ -29,8 +30,43 @@ const baseQueryWithErrorHandling = async (args, api, extraOptions) => {
       });
     }
     if (result.error.status === 401) {
-      // maybe dispatch a logout, clear token, redirect, etc.
-      // api.dispatch(logoutUser());
+      try {
+        // Call the refresh endpoint
+        const refreshResult = await baseQuery(
+          { url: "/refresh", method: "POST" },
+          api,
+          extraOptions
+        );
+
+        if (refreshResult.data) {
+          console.log("refreshResult.data", refreshResult.data);
+          const newAccessToken = refreshResult.data.data.token;
+
+          // Update access token in your storage
+          setToken(newAccessToken);
+
+          // Retry the original request with the new token
+          result = await baseQuery(
+            {
+              ...args,
+              headers: {
+                ...args.headers,
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            },
+            api,
+            extraOptions
+          );
+
+          // if (result.data) result = { ...result, data: { ...result.data } };
+        } else {
+          // Refresh token failed → logout user
+          // api.dispatch(logoutUser());
+        }
+      } catch (err) {
+        console.error("Refresh token error:", err);
+        // api.dispatch(logoutUser());
+      }
     }
   }
   return result;
