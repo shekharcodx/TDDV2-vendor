@@ -31,7 +31,7 @@ const getToken = () => {
 
 const removeToken = () => {
   Cookies.remove("vendor-token");
-  Cookies.remove("refreshToken");
+  Cookies.remove("vendorRefreshToken");
 };
 
 const setUser = (user) => {
