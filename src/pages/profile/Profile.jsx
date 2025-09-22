@@ -39,6 +39,7 @@ const schema = z.object({
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const [preview, setPreview] = useState(null);
   const { data: profileData, isFetching } = useGetProfileQuery({
     refetchOnMountOrArgChange: true,
     skip: false,
@@ -103,6 +104,14 @@ const Profile = () => {
 
   const toggleEdit = () => {
     setIsEditing((prev) => !prev);
+  };
+
+  const handleProfilePicSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setPreview(imageUrl); // store preview URL
+    }
   };
 
   const onSubmit = async (data) => {
@@ -172,9 +181,10 @@ const Profile = () => {
                 ) : (
                   <img
                     src={
-                      profileData?.data?.profilePicture
+                      preview ??
+                      (profileData?.data?.profilePicture
                         ? `${profileData.data.profilePicture}?t=${Date.now()}`
-                        : profilePicPlaceholder
+                        : profilePicPlaceholder)
                     }
                     alt="Profile"
                     className={`h-full w-full ${styles.avatarPhoto}`}
@@ -192,7 +202,9 @@ const Profile = () => {
                 )}
                 <input
                   type="file"
-                  {...register("profilePicture")}
+                  {...register("profilePicture", {
+                    onChange: (e) => handleProfilePicSelect(e),
+                  })}
                   ref={(e) => {
                     register("profilePicture").ref(e); // connect to react-hook-form
                     imageRef.current = e; // keep your own ref
@@ -215,7 +227,7 @@ const Profile = () => {
                     <input
                       type="email"
                       {...register("email")}
-                      className={`${styles.inputEdit} block !w-[350px]`}
+                      className={`${styles.inputEdit} block w-full !md:w-[350px]`}
                     />
                     <div className="text-red-600">{errors?.email?.message}</div>
                   </>
@@ -262,7 +274,7 @@ const Profile = () => {
                       <input
                         type="text"
                         {...register("name")}
-                        className={`${styles.inputEdit} block !w-[350px]`}
+                        className={`${styles.inputEdit} block w-full !md:w-[350px]`}
                       />
                       <div className="text-red-600">
                         {errors?.name?.message}
