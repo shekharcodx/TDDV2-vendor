@@ -44,6 +44,13 @@ const authApi = baseApi.injectEndpoints({
         body: formData, // ✅ FormData for file upload
       }),
     }),
+    logout: builder.mutation({
+      query: () => ({
+        url: "/logout",
+        method: "POST",
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -53,6 +60,7 @@ export const {
   useChangePasswordMutation,
   useResetPasswordMutation,
   useRegisterMutation,
+  useLogoutMutation,
 } = authApi;
 
 export default authApi;

@@ -1,5 +1,7 @@
 import { createListCollection } from "@chakra-ui/react";
 import { ACCOUNT_STATUS, LISTING_STATUS } from "../config/constants";
+import { removeToken, removeUser, removeUserRole } from "./localStorageMethods";
+import { toaster } from "@/components/ui/toaster";
 
 export const getKeyNames = (key) => {
   switch (key) {
@@ -49,3 +51,21 @@ export const listingStatuses = createListCollection({
     })),
   ],
 });
+
+export const handleLogout = () => {
+  removeToken();
+  removeUser();
+  removeUserRole();
+
+  toaster.create({
+    type: "error",
+    title: "Authentication Error",
+    description: "Please sign in again.",
+    closable: true,
+    duration: 3000,
+  });
+
+  setTimeout(() => {
+    window.location.href = "/login";
+  }, 100);
+};

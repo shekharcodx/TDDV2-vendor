@@ -1,6 +1,7 @@
 import { getToken, setToken } from "@/utils/localStorageMethods";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { toaster } from "@/components/ui/toaster";
+import { handleLogout } from "@/utils/helper";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_SERVER_URL,
@@ -18,7 +19,6 @@ const baseQueryWithErrorHandling = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
   if (result.error) {
-    console.error("API Error:", result.error);
     if (result.error?.data?.code === 9028) {
       toaster.create({
         type: "error",
@@ -29,7 +29,7 @@ const baseQueryWithErrorHandling = async (args, api, extraOptions) => {
         duration: 5000,
       });
     }
-    if (result.error.status === 401) {
+    if (result.error.status === 401 && result.error?.data?.code === 9026) {
       try {
         // Call the refresh endpoint
         const refreshResult = await baseQuery(
@@ -50,22 +50,21 @@ const baseQueryWithErrorHandling = async (args, api, extraOptions) => {
             {
               ...args,
               headers: {
-                ...args.headers,
+                ...(args.headers || {}),
                 Authorization: `Bearer ${newAccessToken}`,
               },
             },
             api,
             extraOptions
           );
-
-          // if (result.data) result = { ...result, data: { ...result.data } };
         } else {
-          // Refresh token failed → logout user
-          // api.dispatch(logoutUser());
+          handleLogout();
+          api.dispatch(baseApi.util.resetApiState());
         }
       } catch (err) {
         console.error("Refresh token error:", err);
-        // api.dispatch(logoutUser());
+        handleLogout();
+        api.dispatch(baseApi.util.resetApiState());
       }
     }
   }
