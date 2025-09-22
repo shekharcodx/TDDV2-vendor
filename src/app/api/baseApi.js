@@ -48,8 +48,6 @@ const baseQueryWithErrorHandling = async (args, api, extraOptions) => {
           result.error?.data
         );
         break;
-      default:
-        errorToast("Error", "Please try again", result.error?.data);
     }
 
     if (result.error.status === 401 && result.error?.data?.code === 9026) {
