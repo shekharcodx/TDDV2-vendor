@@ -69,3 +69,13 @@ export const handleLogout = () => {
     window.location.href = "/login";
   }, 100);
 };
+
+export const errorToast = (title, description, err) => {
+  toaster.create({
+    type: "error",
+    title: err?.data?.message || title,
+    description: description,
+    closable: true,
+    duration: 5000,
+  });
+};

@@ -100,7 +100,7 @@ const Header = ({ isOpen, setIsOpen }) => {
               </Avatar.Root>
             </Menu.Trigger>
             <Portal>
-              <Menu.Positioner>
+              <Menu.Positioner zIndex="9999">
                 <Menu.Content>
                   <Menu.Item
                     value="profile"

@@ -1,7 +1,7 @@
 import { getToken, setToken } from "@/utils/localStorageMethods";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { toaster } from "@/components/ui/toaster";
-import { handleLogout } from "@/utils/helper";
+import { handleLogout, errorToast } from "@/utils/helper";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_SERVER_URL,
@@ -19,16 +19,39 @@ const baseQueryWithErrorHandling = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
   if (result.error) {
-    if (result.error?.data?.code === 9028) {
-      toaster.create({
-        type: "error",
-        title: "Account Not Approved",
-        description:
-          "Your account has not been approved, please contact support",
-        closable: true,
-        duration: 5000,
-      });
+    switch (result.error?.data?.code) {
+      case 9022:
+        errorToast(
+          "Your account is deactivated",
+          "Please contact support",
+          result.error?.data
+        );
+        break;
+      case 9028:
+        errorToast(
+          "Account not approved",
+          "Please contact support",
+          result.error?.data
+        );
+        break;
+      case 9030:
+        errorToast(
+          "Your account is on hold",
+          "Please contact support",
+          result.error?.data
+        );
+        break;
+      case 9031:
+        errorToast(
+          "Your account has been blocked",
+          "Please contact support",
+          result.error?.data
+        );
+        break;
+      default:
+        errorToast("Error", "Please try again", result.error?.data);
     }
+
     if (result.error.status === 401 && result.error?.data?.code === 9026) {
       try {
         // Call the refresh endpoint
