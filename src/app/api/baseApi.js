@@ -19,37 +19,6 @@ const baseQueryWithErrorHandling = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
   if (result.error) {
-    switch (result.error?.data?.code) {
-      case 9022:
-        errorToast(
-          "Your account is deactivated",
-          "Please contact support",
-          result.error?.data
-        );
-        break;
-      case 9028:
-        errorToast(
-          "Account approval pending",
-          "Please contact support",
-          result.error?.data
-        );
-        break;
-      case 9030:
-        errorToast(
-          "Your account is on hold",
-          "Please contact support",
-          result.error?.data
-        );
-        break;
-      case 9031:
-        errorToast(
-          "Your account has been blocked",
-          "Please contact support",
-          result.error?.data
-        );
-        break;
-    }
-
     if (result.error.status === 401 && result.error?.data?.code === 9026) {
       try {
         // Call the refresh endpoint
@@ -87,6 +56,37 @@ const baseQueryWithErrorHandling = async (args, api, extraOptions) => {
         handleLogout();
         api.dispatch(baseApi.util.resetApiState());
       }
+    }
+
+    switch (result.error?.data?.code) {
+      case 9022:
+        errorToast(
+          "Your account is deactivated",
+          "Please contact support",
+          result.error?.data
+        );
+        break;
+      case 9028:
+        errorToast(
+          "Account approval pending",
+          "Please contact support",
+          result.error?.data
+        );
+        break;
+      case 9030:
+        errorToast(
+          "Your account is on hold",
+          "Please contact support",
+          result.error?.data
+        );
+        break;
+      case 9031:
+        errorToast(
+          "Your account has been blocked",
+          "Please contact support",
+          result.error?.data
+        );
+        break;
     }
   }
   return result;
