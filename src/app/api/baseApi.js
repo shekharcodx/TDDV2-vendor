@@ -29,7 +29,7 @@ const baseQueryWithErrorHandling = async (args, api, extraOptions) => {
         break;
       case 9028:
         errorToast(
-          "Account not approved",
+          "Account approval pending",
           "Please contact support",
           result.error?.data
         );
