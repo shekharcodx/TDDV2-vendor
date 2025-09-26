@@ -228,6 +228,7 @@ const Profile = () => {
                       type="email"
                       {...register("email")}
                       className={`${styles.inputEdit} block w-full !md:w-[350px]`}
+                      readOnly={true}
                     />
                     <div className="text-red-600">{errors?.email?.message}</div>
                   </>
@@ -413,53 +414,61 @@ const Profile = () => {
                 display={{ base: "block", md: "flex" }}
                 className={styles.infoRow}
               >
-                {Object.entries(profileData?.data?.address ?? {}).map(
-                  ([field, value]) => {
-                    if (["mapUrl", "street"].includes(field)) {
-                      return (
-                        <Box
-                          marginBottom={{ base: "20px" }}
-                          className={styles.infoItem}
-                          key={field}
-                        >
-                          <strong>
-                            {field.charAt(0).toUpperCase() + field.slice(1)}
-                          </strong>
-                          {isEditing ? (
-                            <input
-                              type="text"
-                              {...register(field)}
-                              className={`${styles.inputEdit} ${
-                                !["mapUrl", "street"].includes(field)
-                                  ? "bg-[#00000023]"
-                                  : "bg-[transparent]"
-                              }`}
-                              readOnly={!["mapUrl", "street"].includes(field)}
-                            />
-                          ) : field === "mapUrl" ? (
-                            <a
-                              href={`https://${value}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              View Map
-                            </a>
-                          ) : isFetching ? (
-                            <Skeleton
-                              variant="shine"
-                              width="200px"
-                              height="15px"
-                              mt="10px"
-                            />
-                          ) : (
-                            value
-                          )}
-                        </Box>
-                      );
-                    }
-                    return null;
-                  }
-                )}
+                {" "}
+                {/* Street Field */}
+                <Box
+                  marginBottom={{ base: "20px" }}
+                  className={styles.infoItem}
+                >
+                  <strong>Street</strong>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      {...register("street")}
+                      className={`${styles.inputEdit} bg-[transparent]`}
+                      readOnly={false}
+                    />
+                  ) : isFetching ? (
+                    <Skeleton
+                      variant="shine"
+                      width="200px"
+                      height="15px"
+                      mt="10px"
+                    />
+                  ) : (
+                    profileData?.data?.address?.street
+                  )}
+                </Box>
+                {/* Map URL Field */}
+                <Box
+                  marginBottom={{ base: "20px" }}
+                  className={styles.infoItem}
+                >
+                  <strong>Map Url</strong>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      {...register("mapUrl")}
+                      className={`${styles.inputEdit} bg-[transparent]`}
+                      readOnly={false}
+                    />
+                  ) : isFetching ? (
+                    <Skeleton
+                      variant="shine"
+                      width="200px"
+                      height="15px"
+                      mt="10px"
+                    />
+                  ) : (
+                    <a
+                      href={`https://${profileData?.data?.address?.mapUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View Map
+                    </a>
+                  )}
+                </Box>
               </Box>
             </div>
 
