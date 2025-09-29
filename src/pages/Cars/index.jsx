@@ -22,11 +22,11 @@ const AllCars = () => {
   });
   const columns = [
     {
-      key: "image",
+      key: "coverImage",
       label: "Image",
       render: (listing) => (
         <img
-          src={listing?.car?.images?.[0]?.url || placeholderImg}
+          src={listing?.car?.coverImage?.url || placeholderImg}
           alt={
             listing?.car?.carBrand?.name + " " + listing?.car?.carModel?.name
           }

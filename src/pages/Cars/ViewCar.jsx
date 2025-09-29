@@ -7,6 +7,8 @@ import {
   Badge,
   Image,
   Flex,
+  Skeleton,
+  SkeletonText,
 } from "@chakra-ui/react";
 import { useLazyGetcarListingQuery } from "@/app/api/carListingApi";
 import { useParams } from "react-router-dom";
@@ -17,102 +19,157 @@ const ViewCar = () => {
   const { id: carId } = useParams();
   const [fetchCar, { data: car, isFetching }] = useLazyGetcarListingQuery();
   const [selectedImage, setSelectedImage] = useState("");
+  const [images, setImages] = useState([]);
 
   useEffect(() => {
     if (carId) fetchCar(carId);
   }, [carId]);
 
   useEffect(() => {
-    if (car?.listing?.car?.images.length > 0)
-      setSelectedImage(car?.listing?.car?.images[0]?.url);
+    console.log("ViewCar:", car?.listing?.car?.coverImage);
+    if (car?.listing?.car?.coverImage)
+      setSelectedImage(car?.listing?.car?.coverImage?.url);
+  }, [car]);
+
+  useEffect(() => {
+    if (!car?.listing?.car?.images) return;
+    const imgs = [car?.listing?.car?.coverImage, ...car?.listing?.car?.images];
+    setImages(imgs);
   }, [car]);
 
   return (
     <Box p="30px" borderRadius="16px" bg="whiteAlpha.100" shadow="md">
-      {/* Title & Description */}
-      <Heading fontSize="28px" fontWeight="700" mb="10px">
-        {car?.listing?.title}
-      </Heading>
-      <Text fontSize="16px" color="gray.300" mb="20px">
-        {car?.listing?.description}
-      </Text>
+      {isFetching ? (
+        <>
+          {/* Title Skeleton */}
+          <Skeleton height="32px" mb="10px" borderRadius="8px" />
 
-      {car?.listing?.car?.images.length > 0 && (
-        <Box mb="20px">
-          {/* Big Image */}
-          <Image
-            src={selectedImage}
-            alt={car?.listing?.title}
-            borderRadius="12px"
-            objectFit="contain"
-            w="100%"
-            h="400px"
-            mb="12px"
-            className={styles.bigImage}
-          />
-
-          {/* Thumbnails */}
-          <Flex
-            justifyContent="flex-start"
-            alignItems="center"
-            className={styles.thumbnailGrid}
-          >
-            {car?.listing?.car?.images.map((img, idx) => (
-              <Image
-                key={idx}
-                src={img.url}
-                alt={`${car?.listing?.title}-${idx}`}
-                onClick={() => setSelectedImage(img.url)}
-                cursor="pointer"
-                borderRadius="8px"
-                boxSize="80px"
-                objectFit="contain"
-                border={
-                  selectedImage === img.url
-                    ? "2px solid"
-                    : "2px solid transparent"
-                }
-                borderColor={
-                  selectedImage === img.url ? "blue.400" : "transparent"
-                }
-                shadow={selectedImage === img.url ? "md" : "sm"}
-                transition="all 0.2s ease-in-out"
-                _hover={{ transform: "scale(1.05)" }}
-              />
-            ))}
-          </Flex>
-        </Box>
+          {/* Description Skeleton */}
+          <SkeletonText noOfLines={2} spacing="4" mb="20px" />
+        </>
+      ) : (
+        <>
+          {/* Title & Description */}
+          <Heading fontSize="28px" fontWeight="700" mb="10px">
+            {car?.listing?.title}
+          </Heading>
+          <Text fontSize="16px" color="gray.300" mb="20px">
+            {car?.listing?.description}
+          </Text>
+        </>
       )}
+
+      <Box mb="20px">
+        {/* Big Image with Skeleton */}
+        {isFetching ? (
+          <Skeleton h="400px" w="100%" borderRadius="12px" mb="12px" />
+        ) : (
+          selectedImage && (
+            <Image
+              src={`${selectedImage}?v=${Date.now()}`}
+              alt={car?.listing?.title}
+              borderRadius="12px"
+              objectFit="contain"
+              w="100%"
+              h="400px"
+              className={styles.bigImage}
+            />
+          )
+        )}
+
+        {/* Thumbnails with Skeletons */}
+        <Flex
+          justifyContent="flex-start"
+          alignItems="center"
+          gap="10px"
+          className={styles.thumbnailGrid}
+        >
+          {isFetching
+            ? Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} borderRadius="8px" boxSize="80px" />
+              ))
+            : images?.map((img, idx) => (
+                <Image
+                  src={`${img.url}?v=${Date.now()}`}
+                  alt={`${car?.listing?.title}-${idx}`}
+                  onClick={() => setSelectedImage(img.url)}
+                  cursor="pointer"
+                  borderRadius="8px"
+                  boxSize="80px"
+                  objectFit="contain"
+                  border={
+                    selectedImage === img.url
+                      ? "2px solid"
+                      : "2px solid transparent"
+                  }
+                  borderColor={
+                    selectedImage === img.url ? "blue.400" : "transparent"
+                  }
+                  shadow={selectedImage === img.url ? "md" : "sm"}
+                  transition="all 0.2s ease-in-out"
+                  _hover={{ transform: "scale(1.05)" }}
+                />
+              ))}
+        </Flex>
+      </Box>
 
       {/* Rent & Insurance */}
       <Grid templateColumns="repeat(3, 1fr)" gap={6} mb="20px">
         <GridItem>
           <Text fontWeight="600">Rent per Day</Text>
-          <Text>{car?.listing?.rentPerDay} AED</Text>
+          {!isFetching ? (
+            <Text>{car?.listing?.rentPerDay} AED</Text>
+          ) : (
+            <SkeletonText noOfLines={1} />
+          )}
         </GridItem>
         <GridItem>
           <Text fontWeight="600">Rent per Week</Text>
-          <Text>{car?.listing?.rentPerWeek} AED</Text>
+          {!isFetching ? (
+            <Text>{car?.listing?.rentPerWeek} AED</Text>
+          ) : (
+            <SkeletonText noOfLines={1} />
+          )}
         </GridItem>
         <GridItem>
           <Text fontWeight="600">Rent per Month</Text>
-          <Text>{car?.listing?.rentPerMonth} AED</Text>
+          {!isFetching ? (
+            <Text>{car?.listing?.rentPerMonth} AED</Text>
+          ) : (
+            <SkeletonText noOfLines={1} />
+          )}
         </GridItem>
         <GridItem>
           <Text fontWeight="600">Extra Mileage Rate</Text>
-          <Text>{car?.listing?.extraMileageRate} AED/km</Text>
+          {!isFetching ? (
+            <Text>{car?.listing?.extraMileageRate} AED/km</Text>
+          ) : (
+            <SkeletonText noOfLines={1} />
+          )}
         </GridItem>
         <GridItem>
           <Text fontWeight="600">Delivery Charges</Text>
-          <Text>{car?.listing?.deliveryCharges} AED</Text>
+          {!isFetching ? (
+            <Text>{car?.listing?.deliveryCharges} AED</Text>
+          ) : (
+            <SkeletonText noOfLines={1} />
+          )}
         </GridItem>
         <GridItem>
           <Text fontWeight="600">Toll Charges</Text>
-          <Text>{car?.listing?.tollCharges} AED</Text>
+          {!isFetching ? (
+            <Text>{car?.listing?.tollCharges} AED</Text>
+          ) : (
+            <SkeletonText noOfLines={1} />
+          )}
         </GridItem>
         <GridItem>
           <Text fontWeight="600">Security Deposit</Text>
-          <Text>{car?.listing?.securityDeposit} AED</Text>
+          {!isFetching ? (
+            <Text>{car?.listing?.securityDeposit} AED</Text>
+          ) : (
+            <SkeletonText noOfLines={1} />
+          )}
         </GridItem>
       </Grid>
 
@@ -121,36 +178,56 @@ const ViewCar = () => {
       <Grid templateColumns="repeat(2, 1fr)" gap={6} mb="20px">
         <GridItem>
           <Text fontWeight="600">Car Insurance</Text>
-          <Badge
-            colorPalette={
-              car?.listing?.car?.carInsurance === "yes" ? "green" : "red"
-            }
-          >
-            {car?.listing?.car.carInsurance}
-          </Badge>
+          {!isFetching ? (
+            <Badge
+              colorPalette={
+                car?.listing?.car?.carInsurance === "yes" ? "green" : "red"
+              }
+            >
+              {car?.listing?.car.carInsurance}
+            </Badge>
+          ) : (
+            <SkeletonText noOfLines={1} />
+          )}
         </GridItem>
         <GridItem>
           <Text fontWeight="600">Warranty</Text>
-          <Badge
-            colorPalette={
-              car?.listing?.car.warranty === "yes" ? "green" : "red"
-            }
-          >
-            {car?.listing?.car.warranty}
-          </Badge>
+          {!isFetching ? (
+            <Badge
+              colorPalette={
+                car?.listing?.car.warranty === "yes" ? "green" : "red"
+              }
+            >
+              {car?.listing?.car.warranty}
+            </Badge>
+          ) : (
+            <SkeletonText noOfLines={1} />
+          )}
         </GridItem>
         <GridItem>
           <Text fontWeight="600">Pickup Available</Text>
-          <Badge colorPalette={car?.listing?.pickupAvailable ? "green" : "red"}>
-            {car?.listing?.pickupAvailable ? "Yes" : "No"}
-          </Badge>
+          {!isFetching ? (
+            <Badge
+              colorPalette={car?.listing?.pickupAvailable ? "green" : "red"}
+            >
+              {car?.listing?.pickupAvailable ? "Yes" : "No"}
+            </Badge>
+          ) : (
+            <SkeletonText noOfLines={1} />
+          )}
         </GridItem>
 
         <GridItem>
           <Text fontWeight="600">Deposit Required</Text>
-          <Badge colorPalette={car?.listing?.depositRequired ? "green" : "red"}>
-            {car?.listing?.depositRequired ? "Yes" : "No"}
-          </Badge>
+          {!isFetching ? (
+            <Badge
+              colorPalette={car?.listing?.depositRequired ? "green" : "red"}
+            >
+              {car?.listing?.depositRequired ? "Yes" : "No"}
+            </Badge>
+          ) : (
+            <SkeletonText noOfLines={1} />
+          )}
         </GridItem>
       </Grid>
 
@@ -161,73 +238,112 @@ const ViewCar = () => {
         Specifications
       </Heading>
       <Grid templateColumns="repeat(2, 1fr)" gap={6}>
-        <Spec label="Mileage" value={`${car?.listing?.car.mileage} km`} />
+        <Spec
+          label="Mileage"
+          value={`${car?.listing?.car.mileage} km`}
+          isFetching={isFetching}
+        />
         <Spec
           label="Daily Mileage"
           value={`${car?.listing?.car?.dailyMileage} km`}
+          isFetching={isFetching}
         />
         <Spec
           label="Weekly Mileage"
           value={`${car?.listing?.car?.weeklyMileage} km`}
+          isFetching={isFetching}
         />
         <Spec
           label="Monthly Mileage"
           value={`${car?.listing?.car?.monthlyMileage} km`}
+          isFetching={isFetching}
         />
-        <Spec label="Location" value={car?.listing?.location} />
-        <Spec label="Brand" value={car?.listing?.car.carBrand?.name} />
+        <Spec
+          label="Location"
+          value={car?.listing?.location}
+          isFetching={isFetching}
+        />
+        <Spec
+          label="Brand"
+          value={car?.listing?.car.carBrand?.name}
+          isFetching={isFetching}
+        />
         <Spec
           label="Model"
           value={car?.listing?.car?.carBrand?.carModel?.name}
+          isFetching={isFetching}
         />
         <Spec
           label="Trim"
           value={car?.listing?.car?.carBrand?.carModel?.details?.carTrim}
+          isFetching={isFetching}
         />
         <Spec
           label="Year"
           value={car?.listing?.car?.carBrand?.carModel?.details?.modelYear}
+          isFetching={isFetching}
         />
-        <Spec label="Category" value={car?.listing?.car?.category} />
-        <Spec label="Regional Specs" value={car?.listing?.car?.regionalSpecs} />
+        <Spec
+          label="Category"
+          value={car?.listing?.car?.category}
+          isFetching={isFetching}
+        />
+        <Spec
+          label="Regional Specs"
+          value={car?.listing?.car?.regionalSpecs}
+          isFetching={isFetching}
+        />
         <Spec
           label="Horse Power"
           value={car?.listing?.car?.carBrand?.carModel?.details?.horsePower}
+          isFetching={isFetching}
         />
         <Spec
           label="Seating Capacity"
           value={
             car?.listing?.car?.carBrand?.carModel?.details?.seatingCapacity
           }
+          isFetching={isFetching}
         />
         <Spec
           label="Interior Color"
           value={car?.listing?.car?.carBrand?.carModel?.details?.interiorColor}
+          isFetching={isFetching}
         />
         <Spec
           label="Exterior Color"
           value={car?.listing?.car?.carBrand?.carModel?.details?.exteriorColor}
+          isFetching={isFetching}
         />
         <Spec
           label="Doors"
           value={car?.listing?.car?.carBrand?.carModel?.details?.doors}
+          isFetching={isFetching}
         />
         <Spec
           label="Transmission"
           value={car?.listing?.car?.carBrand?.carModel?.details?.transmission}
+          isFetching={isFetching}
         />
         <Spec
           label="Body Type"
           value={car?.listing?.car?.carBrand?.carModel?.details?.bodyType}
+          isFetching={isFetching}
         />
         <Spec
           label="Fuel Type"
           value={car?.listing?.car?.carBrand?.carModel?.details?.fuelType}
+          isFetching={isFetching}
         />
-        <Spec label="Air Bags" value={car?.listing?.car?.airBags} />
+        <Spec
+          label="Air Bags"
+          value={car?.listing?.car?.airBags}
+          isFetching={isFetching}
+        />
         <Spec
           label="Fuel Tank Capacity"
           value={`${car?.listing?.car?.tankCapacity} L`}
+          isFetching={isFetching}
         />
       </Grid>
 
@@ -271,10 +387,10 @@ const ViewCar = () => {
   );
 };
 
-const Spec = ({ label, value }) => (
+const Spec = ({ label, value, isFetching }) => (
   <Box>
     <Text fontWeight="600">{label}</Text>
-    <Text>{value || "-"}</Text>
+    {!isFetching ? <Text>{value || "-"}</Text> : <SkeletonText noOfLines={1} />}
   </Box>
 );
 

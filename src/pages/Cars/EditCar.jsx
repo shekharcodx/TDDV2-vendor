@@ -98,6 +98,11 @@ const editCarSchema = z.object({
   fuelType: z.string().min(1, "Fuel type is required"),
   techFeatures: z.array(z.string()).optional(),
   otherFeatures: z.array(z.string()).optional(),
+  coverImage: z
+    .any()
+    .optional()
+    .refine((file) => file?.length === 1, "Cover image is required")
+    .transform((files) => files[0]),
   images: z
     .any()
     .optional()
@@ -310,6 +315,7 @@ const EditCar = () => {
     reset,
   ]);
   const [selectedImages, setSelectedImages] = useState([]);
+  const [selectedCoverImage, setSelectedCoverImage] = useState(null);
 
   // 🔹 Cascading dropdowns
   const selectedBrand = watch("carBrand");
@@ -336,6 +342,17 @@ const EditCar = () => {
     }));
     // setValue("images", [...images, ...newImages]);
     setSelectedImages(newImages);
+  };
+
+  const handleCoverImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedCoverImage({
+        file,
+        name: file.name,
+        url: URL.createObjectURL(file),
+      });
+    }
   };
 
   // 🔹 Submit
@@ -1077,6 +1094,46 @@ const EditCar = () => {
         </div>
         {/* )} */}
 
+        {/* Cover Images */}
+        <div className={styles.imageUploadSection}>
+          <div className={styles.sectionHeader}>Add Cover Image</div>
+          <input
+            {...register("coverImage", {
+              onChange: (e) => {
+                handleCoverImageChange(e);
+              },
+            })}
+            id="cover-upload"
+            type="file"
+            className={styles.fileInput}
+            hidden
+          />
+          <label htmlFor="cover-upload" className={styles.uploadLabel}>
+            Choose Cover Image
+          </label>
+
+          {errors.coverImage && (
+            <p className="text-red-500 text-sm">{errors.coverImage.message}</p>
+          )}
+          {selectedCoverImage ? (
+            <div className={styles.imagePreviewGrid}>
+              <img
+                src={selectedCoverImage.url}
+                alt={selectedCoverImage.name}
+                className={styles.imagePreview}
+              />
+            </div>
+          ) : (
+            <div className={styles.imagePreviewGrid}>
+              <img
+                src={carData?.car?.coverImage.url}
+                alt={carData?.car?.coverImage.key}
+                className={styles.imagePreview}
+              />
+            </div>
+          )}
+        </div>
+
         {/* Images */}
         <div className={styles.imageUploadSection}>
           <div className={styles.sectionHeader}>Add Images</div>
@@ -1099,17 +1156,6 @@ const EditCar = () => {
           {errors?.images && (
             <p className="text-red-500 text-sm">{errors.images?.message}</p>
           )}
-          {/* {images.length > 0 && (
-            <div className={styles.imageToggleWrapper}>
-              <button
-                type="button"
-                onClick={() => setShowImages(!showImages)}
-                className={styles.toggleButton}
-              >
-                {showImages ? "Hide Images" : "Show Images"}
-              </button>
-            </div>
-          )} */}
           {selectedImages.length > 0 ? (
             <div className={styles.imagePreviewGrid}>
               {selectedImages.map((img, idx) => (
