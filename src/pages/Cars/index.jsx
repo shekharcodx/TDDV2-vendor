@@ -26,7 +26,9 @@ const AllCars = () => {
       label: "Image",
       render: (listing) => (
         <img
-          src={listing?.car?.coverImage?.url || placeholderImg}
+          src={
+            `${listing?.car?.coverImage?.url}?v=${Date.now()}` || placeholderImg
+          }
           alt={
             listing?.car?.carBrand?.name + " " + listing?.car?.carModel?.name
           }
