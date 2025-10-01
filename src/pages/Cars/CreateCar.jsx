@@ -394,28 +394,21 @@ const CreateCar = () => {
               <p className="text-red-500 text-sm">{errors.mileage.message}</p>
             )}
           </div>
-        <div>
-          
-  <label className={styles.labelWrapper}>
-    Location
-    <select {...register("location")} className={styles.select}>
-      <option value="">Select Emirate</option>
-      <option value="Abu Dhabi">Abu Dhabi</option>
-      <option value="Dubai">Dubai</option>
-      <option value="Sharjah">Sharjah</option>
-      <option value="Ajman">Ajman</option>
-      <option value="Umm Al Quwain">Umm Al Quwain</option>
-      <option value="Ras Al Khaimah">Ras Al Khaimah</option>
-      <option value="Fujairah">Fujairah</option>
-    </select>
-    {errors.location && (
-      <p className="text-red-500 text-sm">{errors.location.message}</p>
-    )}
-  </label>
-</div>
-
-
-
+          <div>
+            <select {...register("location")} className={styles.select}>
+              <option value="">Select Emirate</option>
+              <option value="Abu Dhabi">Abu Dhabi</option>
+              <option value="Dubai">Dubai</option>
+              <option value="Sharjah">Sharjah</option>
+              <option value="Ajman">Ajman</option>
+              <option value="Umm Al Quwain">Umm Al Quwain</option>
+              <option value="Ras Al Khaimah">Ras Al Khaimah</option>
+              <option value="Fujairah">Fujairah</option>
+            </select>
+            {errors.location && (
+              <p className="text-red-500 text-sm">{errors.location.message}</p>
+            )}
+          </div>
         </div>
         {/* Brand → Model → Trim → Year */}
         <div className={styles.grid}>

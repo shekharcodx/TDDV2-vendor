@@ -501,11 +501,21 @@ const EditCar = () => {
             )}
           </div>
           <div>
-            <input
+            {/* <input
               className={styles.input}
               placeholder="Location"
               {...register("location")}
-            />
+            /> */}
+            <select {...register("location")} className={styles.select}>
+              <option value="">Select Emirate</option>
+              <option value="Abu Dhabi">Abu Dhabi</option>
+              <option value="Dubai">Dubai</option>
+              <option value="Sharjah">Sharjah</option>
+              <option value="Ajman">Ajman</option>
+              <option value="Umm Al Quwain">Umm Al Quwain</option>
+              <option value="Ras Al Khaimah">Ras Al Khaimah</option>
+              <option value="Fujairah">Fujairah</option>
+            </select>
             {errors?.location && (
               <p className="text-red-500 text-sm">{errors.location?.message}</p>
             )}
