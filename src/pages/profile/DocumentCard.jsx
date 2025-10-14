@@ -53,7 +53,7 @@ const DocumentCard = ({ doc }) => {
   const getLabel = (key) => {
     switch (key) {
       case "ijariCertificate":
-        return "Ijari Certificate";
+        return "Ejari Certificate";
         break;
       case "tradeLicense":
         return "Trade License";
@@ -70,6 +70,8 @@ const DocumentCard = ({ doc }) => {
       case "otherDocument":
         return "Other Document";
         break;
+      case "poa":
+        return "POA";
       default:
         return key;
     }

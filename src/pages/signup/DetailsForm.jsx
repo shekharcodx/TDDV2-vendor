@@ -145,7 +145,7 @@ export default function DetailsForm() {
           {/* File Uploads in Flex Rows */}
           <div className={styles.flexRow}>
             <div className={styles.halfInput}>
-              <label className={styles.label}>Ijari Certificate *</label>
+              <label className={styles.label}>Ejari Certificate *</label>
               <input
                 type="file"
                 className={styles.input}
