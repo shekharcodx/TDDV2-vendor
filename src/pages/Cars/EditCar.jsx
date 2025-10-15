@@ -100,9 +100,11 @@ const editCarSchema = z.object({
   otherFeatures: z.array(z.string()).optional(),
   coverImage: z
     .any()
-    .optional()
-    .refine((file) => file?.length === 1, "Cover image is required")
-    .transform((files) => files[0]),
+    .refine(
+      (file) => !file || file.length === 0 || file.length === 1,
+      "Cover image is required"
+    )
+    .transform((files) => (files && files.length > 0 ? files[0] : undefined)),
   images: z
     .any()
     .optional()
