@@ -119,5 +119,6 @@ export const baseApi = createApi({
     "profile",
     "Categories",
     "VendorCar",
+    "bookings",
   ],
 });

@@ -12,6 +12,7 @@ import {
   FaDatabase,
   FaEnvelope,
   FaGears,
+  FaRegClipboard,
   FaShop,
   FaUser,
   FaUserPlus,
@@ -48,6 +49,12 @@ const sideBarMenu = [
         icon: <FaCarAlt className={styles.icon} />,
       },
     ],
+  },
+  {
+    label: "Bookings",
+    route: "/bookings",
+    icon: <FaRegClipboard className={styles.icon} />,
+    subMenu: null,
   },
 ];
 

@@ -43,8 +43,8 @@ function DataTable({
                     getRowClass
                       ? getRowClass(row, index)
                       : index % 2 === 0
-                      ? styles.tableRowEven
-                      : styles.tableRowOdd
+                        ? styles.tableRowEven
+                        : styles.tableRowOdd
                   }
                 >
                   {columns.map((col) => (

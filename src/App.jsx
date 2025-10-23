@@ -23,6 +23,7 @@ import EditCar from "./pages/Cars/EditCar";
 import Details from "./pages/signup/DetailsForm";
 import PagesLayout from "./pages/layout/PagesLayout";
 import ViewCar from "./pages/Cars/ViewCar";
+import Booking from "./pages/bookings";
 
 // 🔧 FIX: Import missing UserForm if it's created
 // import UserForm from "./pages/spam/UserForm"; // ← Only if this file exists
@@ -40,6 +41,7 @@ function App() {
             { index: true, element: <DashboardPage /> },
             { path: "profile", element: <Profile /> },
             { path: "user-form", element: <UserForm /> },
+            { path: "bookings", element: <Booking /> },
             {
               path: "/cars",
               element: <PagesLayout />,
